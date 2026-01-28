@@ -1,0 +1,15 @@
+{% set hasError = field.vars.errors|length > 0 %}
+{% set attr = field.vars.attr|merge({
+	class: (field.vars.attr.class|default('form-control')) ~ (hasError ? ' is-invalid' : '')
+}) %}
+
+<div class="mb-3">
+	{{ form_label(field, null, { label_attr: { class: 'form-label' } }) }}
+	{{ form_widget(field, { attr: attr }) }}
+
+	{% if hasError %}
+		<div class="invalid-feedback d-block">
+			{{ form_errors(field) }}
+		</div>
+	{% endif %}
+</div>

@@ -1,0 +1,15 @@
+{% set route_name = route_name|default('product_index') %}
+
+<form method="get" class="mb-3 d-flex gap-2">
+	<input class="form-control" type="text" name="q" value="{{ q|default('') }}" placeholder="Szukaj...">
+	<input type="hidden" name="asort" value="{{ asort|default(0) }}">
+	<input type="hidden" name="limit" value="{{ limit|default(24) }}">
+	<button class="btn btn-primary" type="submit">Szukaj</button>
+
+	{% if q is defined and q %}
+		<a class="btn btn-outline-secondary"
+		   href="{{ path(route_name, { asort: asort|default(0), limit: limit|default(24) }) }}">
+			Wyczyść
+		</a>
+	{% endif %}
+</form>

@@ -1,0 +1,12 @@
+{% set route_name = route_name|default('product_index') %}
+{% set param_name = param_name|default('asort') %}
+
+<div class="categories-grid">
+	{% for c in categories %}
+		<a class="category-tile" href="{{ path(route_name, { (param_name): c.id }) }}">
+			<div class="category-tile__name">{{ c.Name }}</div>
+		</a>
+	{% else %}
+		<div class="categories-grid__empty">Brak kategorii.</div>
+	{% endfor %}
+</div>

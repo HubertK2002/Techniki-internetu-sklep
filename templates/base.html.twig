@@ -11,7 +11,49 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
+	<script>
+document.addEventListener('click', async (e) => {
+	const btn = e.target.closest('.js-add-to-cart');
+	if (!btn) return;
+
+	e.preventDefault();
+
+	const url = btn.dataset.url;
+	if (!url) return;
+
+	btn.disabled = true;
+
+	try {
+		const res = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest',
+				'Accept': 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			credentials: 'same-origin',
+			body: new URLSearchParams({ qty: '1' }).toString()
+		});
+
+		const data = await res.json();
+
+		if (data && data.ok) {
+			const badge = document.getElementById('cart-badge');
+			if (badge) {
+				const count = parseInt(data.count || 0, 10);
+				badge.textContent = String(count);
+				badge.classList.toggle('d-none', count <= 0);
+			}
+		}
+	} catch (err) {
+		console.error(err);
+	} finally {
+		btn.disabled = false;
+	}
+});
+</script>
     <body>
+		{{ include('navbar.html.twig', { cart_count: cart_count|default(0) }) }}
         {% block body %}{% endblock %}
     </body>
 </html>

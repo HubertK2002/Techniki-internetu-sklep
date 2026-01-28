@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Koszyk{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+	<h1 class="mb-4">Koszyk</h1>
+
+	{% if cart is null or cart.Items|length == 0 %}
+		<div class="alert alert-secondary">Koszyk jest pusty.</div>
+	{% else %}
+		<table class="table align-middle">
+			<thead>
+				<tr>
+					<th>Produkt</th>
+					<th class="text-end">Cena</th>
+					<th style="width: 200px;">Ilość</th>
+					<th class="text-end">Suma</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set total = 0 %}
+				{% for item in cart.Items %}
+					{% set p = item.Product %}
+					{% set line = (p.Price ?? 0) * item.Quantity %}
+					{% set total = total + line %}
+
+					<tr>
+						<td>{{ p.Name }}</td>
+						<td class="text-end">{{ p.Price|number_format(2, ',', ' ') }} zł</td>
+
+						<td>
+							<form method="post" action="{{ path('cart_set_qty', { id: p.id }) }}" class="d-flex gap-2">
+								<input class="form-control" type="number" name="qty" min="1" value="{{ item.Quantity }}">
+								<button class="btn btn-outline-primary" type="submit">OK</button>
+							</form>
+						</td>
+
+						<td class="text-end">{{ line|number_format(2, ',', ' ') }} zł</td>
+
+						<td class="text-end">
+							<form method="post" action="{{ path('cart_remove', { id: p.id }) }}">
+								<button class="btn btn-outline-danger" type="submit">Usuń</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+
+			<tfoot>
+				<tr>
+					<th colspan="3" class="text-end fw-bold">Razem</th>
+					<th class="text-end fw-bold">{{ total|number_format(2, ',', ' ') }} zł</th>
+					<th></th>
+				</tr>
+			</tfoot>
+		</table>
+		<form method="post" action="{{ path('order_create_from_cart') }}" class="text-end">
+			<button class="btn btn-success" type="submit">Złóż zamówienie</button>
+		</form>
+	{% endif %}
+</div>
+{% endblock %}

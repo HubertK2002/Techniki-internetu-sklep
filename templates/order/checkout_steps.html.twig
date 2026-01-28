@@ -1,0 +1,109 @@
+{% for msg in app.flashes('error') %}
+	<div class="alert alert-danger">{{ msg }}</div>
+{% endfor %}
+{% for msg in app.flashes('success') %}
+	<div class="alert alert-success">{{ msg }}</div>
+{% endfor %}
+{% set locked = order.Status != 'new' %}
+
+{# KROK 1: dostawa #}
+<div class="card mb-3">
+	<div class="card-body">
+		<h5 class="mb-3">1) Metoda dostawy</h5>
+		{% if order.DeliveryMethod %}
+			<div class="mb-2">Wybrano: <strong>{{ order.DeliveryMethod }}</strong></div>
+		{% endif %}
+		<form method="post" action="{{ locked ? '' : path('order_set_delivery', { id: order.id }) }}" class="d-flex gap-2 flex-wrap">
+			<button
+				class="btn {{ order.DeliveryMethod == 'courier' ? 'btn-primary' : 'btn-outline-primary' }}"
+				name="delivery_method"
+				value="courier"
+				{{ locked ? 'disabled' }}
+			>
+				Kurier
+			</button>
+
+			<button
+				class="btn {{ order.DeliveryMethod == 'pickup' ? 'btn-primary' : 'btn-outline-primary' }}"
+				name="delivery_method"
+				value="pickup"
+				{{ locked ? 'disabled' }}
+			>
+				Odbiór osobisty
+			</button>
+		</form>
+	</div>
+</div>
+
+{# KROK 2: dane dostawy zależne od metody #}
+{% if order.DeliveryMethod is not null %}
+<div class="card mb-3">
+	<div class="card-body">
+		<h5 class="mb-3">2) Dane dostawy</h5>
+
+		{% if order.DeliveryMethod == 'courier' %}
+			<form method="post" action="{{ path('order_set_shipping', { id: order.id }) }}" class="row g-2">
+				<div class="col-12">
+					<input class="form-control" name="address_line" placeholder="Ulica i numer" {{ locked ? 'disabled' }}
+						value="{{ order.AddressLine|default('') }}">
+				</div>
+				<div class="col-4">
+					<input class="form-control" name="postal_code" placeholder="Kod pocztowy" {{ locked ? 'disabled' }}
+						value="{{ order.PostalCode|default('') }}">
+				</div>
+				<div class="col-8">
+					<input class="form-control" name="city" placeholder="Miasto" {{ locked ? 'disabled' }}
+						value="{{ order.City|default('') }}">
+				</div>
+				<div class="col-12">
+					<button class="btn btn-primary" {{ locked ? 'disabled' }}>Zapisz adres</button>
+				</div>
+			</form>
+		{% elseif order.DeliveryMethod == 'pickup' %}
+			<div class="text-muted">Odbiór na miejscu — nie wymagamy adresu.</div>
+		{% else %}
+			<div class="text-muted">Najpierw wybierz metodę dostawy.</div>
+		{% endif %}
+	</div>
+</div>
+{% endif %}
+
+{# KROK 3: płatność (paczkomat bez COD) #}
+{% if order.DeliveryMethod is not null %}
+<div class="card mb-3">
+	<div class="card-body">
+		<h5 class="mb-3">3) Metoda płatności</h5>
+
+		<form method="post" action="{{ path('order_set_payment', { id: order.id }) }}" class="d-flex gap-2 flex-wrap">
+			<button
+				class="btn {{ order.PaymentMethod == 'payu' ? 'btn-primary' : 'btn-outline-primary' }}"
+				name="payment_method"
+				value="payu"
+				{{ locked ? 'disabled' }}
+			>PayU</button>
+
+			<button
+				class="btn {{ order.PaymentMethod == 'cod' ? 'btn-primary' : 'btn-outline-primary' }}"
+				name="payment_method"
+				value="cod"
+				{{ locked ? 'disabled' }}
+			>Za pobraniem</button>
+		</form>
+	</div>
+</div>
+{% endif %}
+
+{# KROK 4: finalizacja #}
+<div class="text-end">
+	{% if order.Status == 'new' %}
+		<div class="text-end">
+			<form method="post" action="{{ path('order_confirm', { id: order.id }) }}">
+				<button class="btn btn-success" type="submit">Złóż zamówienie</button>
+			</form>
+		</div>
+	{% else %}
+		<div class="alert alert-success mb-0">
+			Zamówienie zostało złożone.
+		</div>
+	{% endif %}
+</div>

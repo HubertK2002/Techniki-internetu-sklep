@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-12 col-sm-10 col-md-8 col-lg-5">
+			<div class="card shadow-sm">
+				<div class="card-body p-4">
+					<h1 class="h3 mb-3">Create account</h1>
+
+					{% for flash_error in app.flashes('verify_email_error') %}
+						<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+					{% endfor %}
+
+					{{ form_start(registrationForm, { attr: { novalidate: 'novalidate' } }) }}
+
+						{{ include('form/field.html.twig', { field: registrationForm.email }) }}
+						{{ include('form/field.html.twig', { field: registrationForm.firstName }) }}
+						{{ include('form/field.html.twig', { field: registrationForm.lastName }) }}
+						{{ include('form/field.html.twig', { field: registrationForm.plainPassword }) }}
+						{{ include('form/checkbox.html.twig', { field: registrationForm.agreeTerms }) }}
+
+						<button type="submit" class="btn btn-primary w-100">
+							Register
+						</button>
+
+					{{ form_end(registrationForm) }}
+
+					<hr class="my-4">
+
+					<div class="text-center small">
+						Already have an account?
+						<a href="{{ path('app_login') }}">Sign in</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center text-body-secondary small mt-3">
+				By creating an account, you agree to the terms.
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

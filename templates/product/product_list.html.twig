@@ -1,0 +1,67 @@
+{% set route_name = route_name|default('product_index') %}
+{% set base_params = app.request.query.all %}
+{% set radius = 2 %}
+
+<div class="container py-4">
+
+	<div class="products-grid">
+		{% for product in products %}
+			{{ include('product/product_card.html.twig', { product: product }) }}
+		{% else %}
+			<div class="alert alert-secondary mb-0">Brak produktów.</div>
+		{% endfor %}
+	</div>
+
+	{% if total_pages > 1 %}
+		{% set start = page - radius %}
+		{% set end = page + radius %}
+		{% if start < 1 %}{% set start = 1 %}{% endif %}
+		{% if end > total_pages %}{% set end = total_pages %}{% endif %}
+
+		<nav class="mt-4" aria-label="Paginacja">
+			<ul class="pagination justify-content-center mb-0">
+
+				<li class="page-item {{ page <= 1 ? 'disabled' }}">
+					<a class="page-link" href="{{ path(route_name, base_params|merge({ page: page - 1 })) }}">&laquo;</a>
+				</li>
+
+				{# 1 #}
+				<li class="page-item {{ page == 1 ? 'active' }}">
+					<a class="page-link" href="{{ path(route_name, base_params|merge({ page: 1 })) }}">1</a>
+				</li>
+
+				{# ... przed oknem #}
+				{% if start > 2 %}
+					<li class="page-item disabled"><span class="page-link">…</span></li>
+				{% endif %}
+
+				{# okno stron #}
+				{% for p in start..end %}
+					{% if p != 1 and p != total_pages %}
+						<li class="page-item {{ p == page ? 'active' }}">
+							<a class="page-link" href="{{ path(route_name, base_params|merge({ page: p })) }}">{{ p }}</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+
+				{# ... po oknie #}
+				{% if end < total_pages - 1 %}
+					<li class="page-item disabled"><span class="page-link">…</span></li>
+				{% endif %}
+
+				{# last #}
+				{% if total_pages > 1 %}
+					<li class="page-item {{ page == total_pages ? 'active' }}">
+						<a class="page-link" href="{{ path(route_name, base_params|merge({ page: total_pages })) }}">{{ total_pages }}</a>
+					</li>
+				{% endif %}
+
+				<li class="page-item {{ page >= total_pages ? 'disabled' }}">
+					<a class="page-link" href="{{ path(route_name, base_params|merge({ page: page + 1 })) }}">&raquo;</a>
+				</li>
+
+			</ul>
+		</nav>
+	{% endif %}
+
+</div>

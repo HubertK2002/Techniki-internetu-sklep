@@ -1,0 +1,17 @@
+{% set hasError = registrationForm.agreeTerms.vars.errors|length > 0 %}
+
+<div class="form-check mb-3">
+	{{ form_widget(registrationForm.agreeTerms, {
+		attr: {
+			class: 'form-check-input' ~ (hasError ? ' is-invalid' : '')
+		}
+	}) }}
+
+	{{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'form-check-label' } }) }}
+
+	{% if hasError %}
+		<div class="invalid-feedback d-block">
+			{{ form_errors(registrationForm.agreeTerms) }}
+		</div>
+	{% endif %}
+</div>
