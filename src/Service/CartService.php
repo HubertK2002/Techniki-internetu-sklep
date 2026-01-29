@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Order;
+use App\Exception\InsufficientStockException;
 
 final class CartService
 {
@@ -303,13 +304,21 @@ final class CartService
 
 		try {
 			// 1) Sprawdź + zarezerwuj stock atomowo
+			$errors = [];
 			foreach ($cart->getItems() as $item) {
-				$product = $item->getProduct();
+				$product = $item->getProduct();	
+				$qty = (int)$item->getQuantity();
+				$stock = $product?->getStock();
+				
+				
 				if (!$product) {
-					throw new \RuntimeException('Jeden z produktów nie istnieje.');
+					$errors[] = 'Produkt usunięty z oferty.';
+					continue;
 				}
 
-				$qty = (int) $item->getQuantity();
+				if ($stock === null || $stock < $qty) {
+					$errors[] = sprintf('%s: dostępne %d, potrzebujesz %d', $product->getName(), (int)$stock, $qty);
+				}
 
 				//null oznacza brak/0
 				$affected = $em->createQuery(
@@ -321,9 +330,10 @@ final class CartService
 					->setParameter('id', $product->getId())
 					->execute();
 
-				if ($affected !== 1) {
-					throw new \RuntimeException('Brak na stanie: '.$product->getName());
-				}
+			}
+
+			if ($errors) {
+				throw new InsufficientStockException($errors);
 			}
 
 			// 2) Utwórz Order powiązany z tym koszykiem

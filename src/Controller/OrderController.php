@@ -11,6 +11,7 @@ use App\Service\CartService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Exception\InsufficientStockException;
 
 final class OrderController extends AbstractController
 {
@@ -44,11 +45,17 @@ final class OrderController extends AbstractController
     #[Route('/order/create', name: 'order_create_from_cart', methods: ['POST'])]
 	public function createFromCart(CartService $cartService): Response
 	{
-		$order = $cartService->checkout();
+		try {
+			$order = $cartService->checkout();
+			return $this->redirectToRoute('order_show', ['id' => $order->getId()]);
+		}  catch (InsufficientStockException $e) {
+			$this->addFlash('stock_errors', $e->getLines());
+			return $this->redirectToRoute('cart_show');
 
-		$response = $this->redirectToRoute('order_show', ['id' => $order->getId()]);
-		$cartService->applyCookie($response);
-		return $response;
+		} catch (\RuntimeException $e) {
+			$this->addFlash('error', $e->getMessage());
+			return $this->redirectToRoute('cart_show');
+		}
 	}
 
 	#[IsGranted('ROLE_USER')]

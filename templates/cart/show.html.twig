@@ -3,6 +3,24 @@
 {% block title %}Koszyk{% endblock %}
 
 {% block body %}
+{% for lines in app.flashes('stock_errors') %}
+	<div class="alert alert-danger">
+		<div class="fw-semibold mb-2">Brak na stanie:</div>
+		<ul class="mb-0">
+			{% for line in lines %}
+				<li>{{ line }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endfor %}
+
+{% for msg in app.flashes('error') %}
+	<div class="alert alert-danger">{{ msg }}</div>
+{% endfor %}
+{% for msg in app.flashes('success') %}
+	<div class="alert alert-success">{{ msg }}</div>
+{% endfor %}
+
 <div data-controller="cart-qty-guard">
 	<div class="container py-4">
 		<h1 class="mb-4">Koszyk</h1>
