@@ -290,57 +290,70 @@ final class CartService
 		if (!$user) {
 			throw new \RuntimeException('Musisz być zalogowany, aby złożyć zamówienie.');
 		}
+
 		$cart = $this->getCurrentCart(false);
 		if (!$cart || $cart->getItems()->count() === 0) {
 			throw new \RuntimeException('Koszyk jest pusty.');
 		}
 
-		// 1) utwórz zamówienie powiązane z koszykiem
-		$order = new Order();
-		$order->setCart($cart);
-		$order->setStatus('new');
+		$em = $this->em;
+		$conn = $em->getConnection();
 
-		$user = $this->getUser();
-		if ($user) {
+		$conn->beginTransaction();
+
+		try {
+			// 1) Sprawdź + zarezerwuj stock atomowo
+			foreach ($cart->getItems() as $item) {
+				$product = $item->getProduct();
+				if (!$product) {
+					throw new \RuntimeException('Jeden z produktów nie istnieje.');
+				}
+
+				$qty = (int) $item->getQuantity();
+
+				//null oznacza brak/0
+				$affected = $em->createQuery(
+					'UPDATE App\Entity\Product p
+					 SET p.Stock = p.Stock - :qty
+					 WHERE p.id = :id AND p.Stock IS NOT NULL AND p.Stock >= :qty'
+				)
+					->setParameter('qty', $qty)
+					->setParameter('id', $product->getId())
+					->execute();
+
+				if ($affected !== 1) {
+					throw new \RuntimeException('Brak na stanie: '.$product->getName());
+				}
+			}
+
+			// 2) Utwórz Order powiązany z tym koszykiem
+			$order = new \App\Entity\Order();
 			$order->setUser($user);
-		}
+			$order->setCart($cart);
+			$order->setStatus('new');
 
-		$this->em->persist($order);
+			$em->persist($order);
 
-		// 2) zamroź koszyk
-		$cart->setStatus('ordered');
-
-		// 3) UWAGA: jeśli SessionToken jest UNIQUE, zwolnij go na zamrożonym koszyku
-		// żeby dało się stworzyć nowy koszyk dla gościa.
-		if ($cart->getSessionToken()) {
+			// 3) Zamroź koszyk jako snapshot
+			$cart->setStatus('ordered');
 			$cart->setSessionToken(null);
-		}
 
-		$this->em->flush();
+			$em->flush();
 
-		// 4) utwórz NOWY koszyk aktywny do dalszych zakupów
-		$newCart = new Cart();
-		$newCart->setStatus('active');
-
-		if ($user) {
+			// 4) Utwórz nowy aktywny koszyk dla usera
+			$newCart = new \App\Entity\Cart();
 			$newCart->setUser($user);
-		} else {
-			// nowy token + ustaw cookie
-			$token = bin2hex(random_bytes(32));
-			$newCart->setSessionToken($token);
+			$newCart->setStatus('active');
+			$em->persist($newCart);
+			$em->flush();
 
-			$this->cookieToSet = Cookie::create(self::COOKIE_NAME)
-				->withValue($token)
-				->withExpires(strtotime('+'.self::COOKIE_TTL_DAYS.' days'))
-				->withPath('/')
-				->withSecure($this->isSecureRequest())
-				->withHttpOnly(true)
-				->withSameSite('Lax');
+			$conn->commit();
+
+			return $order;
 		}
-
-		$this->em->persist($newCart);
-		$this->em->flush();
-
-		return $order;
+		catch (\Throwable $e) {
+			$conn->rollBack();
+			throw $e;
+		}
 	}
 }
