@@ -55,6 +55,24 @@ class Order
 	#[ORM\Column]
 	private \DateTimeImmutable $CreatedAt;
 
+	#[ORM\Column(length: 64, nullable: true)]
+	private ?string $PayuOrderId = null;
+
+	#[ORM\Column(type: 'text', nullable: true)]
+	private ?string $PayuRedirectUri = null;
+
+	#[ORM\Column(length: 30, nullable: true)]
+	private ?string $PayuStatus = null;
+
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
+	private ?\DateTimeImmutable $PaidAt = null;
+
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
+	private ?\DateTimeImmutable $PayuLastStatusCheckAt = null;
+
+	#[ORM\Column]
+	private int $PayuAttempt = 0;
+
 	public function __construct()
 	{
 		$this->CreatedAt = new \DateTimeImmutable();
@@ -202,4 +220,87 @@ class Order
 		$this->UpdatedAt = $UpdatedAt;
 		return $this;
 	}
+
+	public function getPayuOrderId(): ?string
+	{
+		return $this->PayuOrderId;
+	}
+
+	public function setPayuOrderId(?string $PayuOrderId): self
+	{
+		$this->PayuOrderId = $PayuOrderId;
+		return $this->touch();
+	}
+
+	public function getPayuRedirectUri(): ?string
+	{
+		return $this->PayuRedirectUri;
+	}
+
+	public function setPayuRedirectUri(?string $PayuRedirectUri): self
+	{
+		$this->PayuRedirectUri = $PayuRedirectUri;
+		return $this->touch();
+	}
+
+	public function getPayuStatus(): ?string
+	{
+		return $this->PayuStatus;
+	}
+
+	public function setPayuStatus(?string $PayuStatus): self
+	{
+		$this->PayuStatus = $PayuStatus;
+		return $this->touch();
+	}
+
+	public function getPaidAt(): ?\DateTimeImmutable
+	{
+		return $this->PaidAt;
+	}
+
+	public function setPaidAt(?\DateTimeImmutable $PaidAt): self
+	{
+		$this->PaidAt = $PaidAt;
+		return $this->touch();
+	}
+
+	public function getPayuLastStatusCheckAt(): ?\DateTimeImmutable
+	{
+		return $this->PayuLastStatusCheckAt;
+	}
+
+	public function setPayuLastStatusCheckAt(?\DateTimeImmutable $PayuLastStatusCheckAt): self
+	{
+		$this->PayuLastStatusCheckAt = $PayuLastStatusCheckAt;
+		return $this->touch();
+	}
+
+	public function isPaid(): bool
+	{
+		return $this->PaidAt !== null || $this->Status === 'paid';
+	}
+
+	public function canContinuePayu(): bool
+	{
+		return $this->PaymentMethod === 'payu' && !$this->isPaid() && $this->PayuRedirectUri !== null;
+	}
+
+	public function getPayuAttempt(): int
+	{
+		return $this->PayuAttempt;
+	}
+
+	public function setPayuAttempt(int $PayuAttempt): self
+	{
+		$this->PayuAttempt = max(0, $PayuAttempt);
+		return $this->touch();
+	}
+
+	public function increasePayuAttempt(): self
+	{
+		$this->PayuAttempt++;
+		return $this->touch();
+	}
+
 }

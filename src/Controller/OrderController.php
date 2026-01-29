@@ -32,10 +32,7 @@ final class OrderController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		// (opcjonalnie) bezpieczeństwo: zalogowany widzi tylko swoje zamówienia
-		if ($this->getUser() && $order->getUser() && $order->getUser() !== $this->getUser()) {
-			throw $this->createAccessDeniedException();
-		}
+		$this->assertOwner($order);
 
 		return $this->render('order/show.html.twig', [
 			'order' => $order,

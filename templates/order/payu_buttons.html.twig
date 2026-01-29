@@ -1,0 +1,56 @@
+{% set locked = order.Status != 'confirmed' %}
+{% set isPaid = order.Status == 'paid' or order.PaidAt is not null %}
+{% set isPayu = order.PaymentMethod == 'payu' %}
+
+{% if isPayu %}
+	<div class="card mb-3">
+		<div class="card-body">
+			<h5 class="mb-3">Płatność PayU</h5>
+
+			{% for msg in app.flashes('error') %}
+				<div class="alert alert-danger">{{ msg }}</div>
+			{% endfor %}
+
+			{% if isPaid %}
+				<div class="alert alert-success mb-0">Opłacone ✅</div>
+			{% else %}
+				<div class="d-flex gap-2 flex-wrap">
+					{% if order.PayuOrderId is empty %}
+						<form method="post" action="{{ path('payu_start', { id: order.id }) }}" data-turbo="false">
+							<button class="btn btn-primary" type="submit" {{ locked ? 'disabled' }}>
+								Rozpocznij płatność
+							</button>
+						</form>
+					{% else %}
+						{% if order.PayuRedirectUri %}
+							<form method="post" action="{{ path('payu_start', { id: order.id }) }}" data-turbo="false">
+								<button class="btn btn-primary" type="submit" {{ locked ? 'disabled' }}>
+									Kontynuuj płatność
+								</button>
+							</form>
+						{% else %}
+							<form method="post" action="{{ path('payu_restart', { id: order.id }) }}" data-turbo="false">
+								<button class="btn btn-outline-danger" type="submit" {{ locked ? 'disabled' }}>
+									Nowa płatność
+								</button>
+							</form>
+						{% endif %}
+
+						<form method="post" action="{{ path('payu_refresh', { id: order.id }) }}" data-turbo="false">
+							<button class="btn btn-outline-secondary" type="submit">
+								Zaktualizuj status
+							</button>
+						</form>
+					{% endif %}
+				</div>
+
+
+				{% if order.PayuStatus %}
+					<div class="small text-muted mt-2">
+						Ostatni status PayU: <strong>{{ order.PayuStatus }}</strong>
+					</div>
+				{% endif %}
+			{% endif %}
+		</div>
+	</div>
+{% endif %}
