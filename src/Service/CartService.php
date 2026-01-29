@@ -285,58 +285,62 @@ final class CartService
 	}
 
 	public function checkout(): Order
-{
-	$cart = $this->getCurrentCart(false);
-	if (!$cart || $cart->getItems()->count() === 0) {
-		throw new \RuntimeException('Koszyk jest pusty.');
+	{
+		$user = $this->getUser();
+		if (!$user) {
+			throw new \RuntimeException('Musisz być zalogowany, aby złożyć zamówienie.');
+		}
+		$cart = $this->getCurrentCart(false);
+		if (!$cart || $cart->getItems()->count() === 0) {
+			throw new \RuntimeException('Koszyk jest pusty.');
+		}
+
+		// 1) utwórz zamówienie powiązane z koszykiem
+		$order = new Order();
+		$order->setCart($cart);
+		$order->setStatus('new');
+
+		$user = $this->getUser();
+		if ($user) {
+			$order->setUser($user);
+		}
+
+		$this->em->persist($order);
+
+		// 2) zamroź koszyk
+		$cart->setStatus('ordered');
+
+		// 3) UWAGA: jeśli SessionToken jest UNIQUE, zwolnij go na zamrożonym koszyku
+		// żeby dało się stworzyć nowy koszyk dla gościa.
+		if ($cart->getSessionToken()) {
+			$cart->setSessionToken(null);
+		}
+
+		$this->em->flush();
+
+		// 4) utwórz NOWY koszyk aktywny do dalszych zakupów
+		$newCart = new Cart();
+		$newCart->setStatus('active');
+
+		if ($user) {
+			$newCart->setUser($user);
+		} else {
+			// nowy token + ustaw cookie
+			$token = bin2hex(random_bytes(32));
+			$newCart->setSessionToken($token);
+
+			$this->cookieToSet = Cookie::create(self::COOKIE_NAME)
+				->withValue($token)
+				->withExpires(strtotime('+'.self::COOKIE_TTL_DAYS.' days'))
+				->withPath('/')
+				->withSecure($this->isSecureRequest())
+				->withHttpOnly(true)
+				->withSameSite('Lax');
+		}
+
+		$this->em->persist($newCart);
+		$this->em->flush();
+
+		return $order;
 	}
-
-	// 1) utwórz zamówienie powiązane z koszykiem
-	$order = new Order();
-	$order->setCart($cart);
-	$order->setStatus('new');
-
-	$user = $this->getUser();
-	if ($user) {
-		$order->setUser($user);
-	}
-
-	$this->em->persist($order);
-
-	// 2) zamroź koszyk
-	$cart->setStatus('ordered');
-
-	// 3) UWAGA: jeśli SessionToken jest UNIQUE, zwolnij go na zamrożonym koszyku
-	// żeby dało się stworzyć nowy koszyk dla gościa.
-	if ($cart->getSessionToken()) {
-		$cart->setSessionToken(null);
-	}
-
-	$this->em->flush();
-
-	// 4) utwórz NOWY koszyk aktywny do dalszych zakupów
-	$newCart = new Cart();
-	$newCart->setStatus('active');
-
-	if ($user) {
-		$newCart->setUser($user);
-	} else {
-		// nowy token + ustaw cookie
-		$token = bin2hex(random_bytes(32));
-		$newCart->setSessionToken($token);
-
-		$this->cookieToSet = Cookie::create(self::COOKIE_NAME)
-			->withValue($token)
-			->withExpires(strtotime('+'.self::COOKIE_TTL_DAYS.' days'))
-			->withPath('/')
-			->withSecure($this->isSecureRequest())
-			->withHttpOnly(true)
-			->withSameSite('Lax');
-	}
-
-	$this->em->persist($newCart);
-	$this->em->flush();
-
-	return $order;
-}
 }

@@ -39,6 +39,7 @@ final class OrderController extends AbstractController
 		]);
 	}
 
+	#[IsGranted('ROLE_USER')]
     #[Route('/order/create', name: 'order_create_from_cart', methods: ['POST'])]
 	public function createFromCart(CartService $cartService): Response
 	{
