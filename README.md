@@ -114,6 +114,11 @@ Głównym punktem dostępowym do sklepu dla konsumentów jest adres serwera, dla
 - Może składać zamówienie
 - Opłacać zamówienie
 - Przeglądać listę zamówień
+1. Aby zalogować się na wygenerowanych użytkowników pobierz z bazy top maili
+```
+    select email from user limit 10;
+```
+2. `Hasło` dla wygenerowanych użytkowników jest ustawione na `test1234`
 
 Dodatkowym punktem dostępowym do aplikacji jest `adres_maszyny/admin` np. `192.168.37.5:8080/admin`, dostęp mają tylko użytkownicy z rolą admin np. `admin1@example.com`, hasło `admin1234`. Admin ma możliwość:
 - CRUD produkty
