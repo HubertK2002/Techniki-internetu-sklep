@@ -148,7 +148,6 @@ final class PayuPaymentService
 		}
 	}
 
-
 	private function assertCanPayu(Order $order): void
 	{
 		if ($order->getPaymentMethod() !== 'payu') {

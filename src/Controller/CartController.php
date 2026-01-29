@@ -20,8 +20,6 @@ final class CartController extends AbstractController
 			'cart' => $cart,
 		]);
 
-		// jeśli user jest gościem i w trakcie powstał token (np. przy pierwszym add),
-		// tu zwykle nie powstaje, bo createIfMissing=false, ale zostawiam bezpiecznie:
 		$cartService->applyCookie($response);
 
 		return $response;

@@ -20,7 +20,7 @@ class CategoryRepository extends ServiceEntityRepository
 	{
 		return $this->createQueryBuilder('c')
 			->select('c AS category, COUNT(p.id) AS productsCount')
-			->leftJoin('c.Products', 'p') // u Ciebie może być 'c.products' zależnie od nazwy pola!
+			->leftJoin('c.Products', 'p')
 			->groupBy('c.id')
 			->orderBy('c.Name', 'ASC')
 			->getQuery()

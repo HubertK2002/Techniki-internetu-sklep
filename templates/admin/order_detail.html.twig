@@ -1,0 +1,66 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+
+{% block main %}
+	{{ parent() }}
+
+	{% set o = entity.instance %}
+
+	{% if o.PaymentMethod == 'payu' %}
+		<hr class="my-4">
+		<h2 class="h5 mb-3">PayU</h2>
+
+		<ul class="list-unstyled mb-0">
+			<li><strong>Status PayU:</strong> {{ o.PayuStatus ?? '—' }}</li>
+			<li><strong>Opłacone:</strong>
+				{% if o.PaidAt %}
+					{{ o.PaidAt|date('Y-m-d H:i') }}
+				{% else %}
+					—
+				{% endif %}
+			</li>
+		</ul>
+	{% endif %}
+
+	{% set cart = entity.instance.Cart ?? null %}
+	{% if cart and cart.Items|length > 0 %}
+		<hr class="my-4">
+
+		<h2 class="h5 mb-3">Zawartość koszyka</h2>
+
+		<table class="table table-striped align-middle">
+			<thead>
+				<tr>
+					<th>Produkt</th>
+					<th class="text-end">Cena</th>
+					<th class="text-end">Ilość</th>
+					<th class="text-end">Suma</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set total = 0 %}
+				{% for item in cart.Items %}
+					{% set p = item.Product %}
+					{% set unit = p ? p.Price : 0 %}
+					{% set line = unit * item.Quantity %}
+					{% set total = total + line %}
+
+					<tr>
+						<td>{{ p ? p.Name : 'Produkt usunięty' }}</td>
+						<td class="text-end">{{ unit|number_format(2, ',', ' ') }} zł</td>
+						<td class="text-end">{{ item.Quantity }}</td>
+						<td class="text-end">{{ line|number_format(2, ',', ' ') }} zł</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="3" class="text-end">Razem</th>
+					<th class="text-end">{{ total|number_format(2, ',', ' ') }} zł</th>
+				</tr>
+			</tfoot>
+		</table>
+	{% else %}
+		<hr class="my-4">
+		<div class="alert alert-secondary mb-0">Brak pozycji w koszyku.</div>
+	{% endif %}
+{% endblock %}

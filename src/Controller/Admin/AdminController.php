@@ -12,6 +12,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Controller\Admin\ProductCrudController;
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Controller\Admin\OrderCrudController;
+use App\Controller\Admin\AllOrdersCrudController;
 
 class AdminController extends AbstractDashboardController
 {
@@ -57,6 +59,25 @@ class AdminController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 		yield MenuItem::linkToCrud('Product', 'fa fa-product', Product::class);
 		yield MenuItem::linkToCrud('Category', 'fa fa-product', Category::class);
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+
+
+		$allOrders = $this->container->get(AdminUrlGenerator::class)
+			->setController(\App\Controller\Admin\AllOrdersCrudController::class)
+			->setAction('index')
+			->generateUrl();
+		yield MenuItem::linkToUrl('Zamówienia', 'fa fa-check', $allOrders);
+
+
+		$urlPaid = $this->container->get(AdminUrlGenerator::class)
+			->setController(\App\Controller\Admin\PaidOrderCrudController::class)
+			->setAction('index')
+			->generateUrl();
+		yield MenuItem::linkToUrl('Zamówienia opłacone', 'fa fa-check', $urlPaid);
+
+		$urlCod = $this->container->get(AdminUrlGenerator::class)
+			->setController(\App\Controller\Admin\CodConfirmedOrderCrudController::class)
+			->setAction('index')
+			->generateUrl();
+		yield MenuItem::linkToUrl('Zamówienia COD (confirmed)', 'fa fa-truck', $urlCod);
     }
 }
