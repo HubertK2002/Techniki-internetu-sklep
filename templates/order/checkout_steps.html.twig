@@ -74,25 +74,33 @@
 
 	{# KROK 3: płatność #}
 	{% if order.DeliveryMethod is not null %}
-	<div class="card mb-3">
+	<div class="card mb-3"
+		data-controller="order-payment"
+		data-order-payment-url-value="{{ path('order_set_payment', { id: order.id }) }}"
+		data-order-payment-locked-value="{{ locked ? 'true' : 'false' }}"
+	>
 		<div class="card-body">
 			<h5 class="mb-3">3) Metoda płatności</h5>
 
-			<form method="post" action="{{ path('order_set_payment', { id: order.id }) }}" class="d-flex gap-2 flex-wrap">
+			<div class="d-flex gap-2 flex-wrap">
 				<button
+					type="button"
+					data-order-payment-target="payu"
+					data-action="order-payment#choose"
+					data-method="payu"
 					class="btn {{ order.PaymentMethod == 'payu' ? 'btn-primary' : 'btn-outline-primary' }}"
-					name="payment_method"
-					value="payu"
 					{{ locked ? 'disabled' }}
 				>PayU</button>
 
 				<button
+					type="button"
+					data-order-payment-target="cod"
+					data-action="order-payment#choose"
+					data-method="cod"
 					class="btn {{ order.PaymentMethod == 'cod' ? 'btn-primary' : 'btn-outline-primary' }}"
-					name="payment_method"
-					value="cod"
 					{{ locked ? 'disabled' }}
 				>Za pobraniem</button>
-			</form>
+			</div>
 		</div>
 	</div>
 	{% endif %}

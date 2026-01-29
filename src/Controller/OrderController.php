@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\CartService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class OrderController extends AbstractController
 {
@@ -127,12 +128,19 @@ final class OrderController extends AbstractController
 
 		$method = (string) $request->request->get('payment_method', '');
 		if (!in_array($method, ['payu', 'cod'], true)) {
+			if ($request->isXmlHttpRequest()) {
+				return new JsonResponse(['ok' => false, 'error' => 'invalid_method'], 400);
+			}
 			$this->addFlash('error', 'Niepoprawna metoda płatności.');
 			return $this->redirectToRoute('order_show', ['id' => $id]);
 		}
 
 		$order->setPaymentMethod($method);
 		$em->flush();
+
+		if ($request->isXmlHttpRequest()) {
+			return new JsonResponse(['ok' => true, 'payment_method' => $method]);
+		}
 
 		return $this->redirectToRoute('order_show', ['id' => $id]);
 	}

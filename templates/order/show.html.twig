@@ -47,7 +47,9 @@
 			</tfoot>
 		</table>
 		{{ include('order/checkout_steps.html.twig', { order: order }) }}
-		{{ include('order/payu_buttons.html.twig', { order: order }) }}
+		{% if order.Status in ['confirmed', 'paid'] %}
+			{{ include('order/payu_buttons.html.twig', { order: order }) }}
+		{% endif %}
 	{% endif %}
 
 	<a class="btn btn-outline-primary" href="{{ path('product_index') }}">Wróć do produktów</a>
