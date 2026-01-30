@@ -1,34 +1,25 @@
 {% set cartCount = cart_count|default(0) %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
+	<div class="container-fluid px-0">
+		<div class="row w-100 g-0">
+			{# ROW 1: 25% - 50% - 25% #}
+			
+			<div class="col-3 d-flex align-items-center justify-content-center">
+				<a class="text-decoration-none fw-semibold" href="{{ path('app_home') }}">
+					<img src="{{ asset('images/Artex.svg') }}" alt="Artex" height="64">
+				</a>
+			</div>
+			
 
-<div class="border-bottom bg-white">
-	<div class="container py-2 d-flex align-items-center justify-content-between">
-		<a class="text-decoration-none fw-semibold" href="{{ path('product_index') }}">
-			Sklep
-		</a>
+			<div class="col-6 d-flex align-items-center justify-content-center">
+				<div style="width: min(100%, 52%);">
+					{% include 'searchbar.html.twig' %}
+				</div>
+			</div>
 
-		<div class="d-flex align-items-center gap-3">
-			{# Login / user #}
-			{% if app.user %}
-				<span class="small text-muted">
-					{{ app.user.firstName|default('') }} {{ app.user.lastName|default('') }}
-				</span>
-				<a class="btn btn-outline-secondary btn-sm" href="{{ path('app_logout') }}">Wyloguj</a>
-			{% else %}
-				<a class="btn btn-outline-primary btn-sm" href="{{ path('app_login') }}">Zaloguj</a>
-			{% endif %}
-
-			{# Cart icon + count #}
-			<a href="{{ path('cart_show') }}" class="position-relative text-decoration-none">
-				<span class="fs-4">🛒</span>
-
-				<span
-					id="cart-badge"
-					class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger {{ cart_count > 0 ? '' : 'd-none' }}"
-				>
-					{{ cart_count }}
-				</span>
-			</a>
-			<a class="btn btn-outline-secondary btn-sm" href="{{ path('order_index') }}">Moje zamówienia</a>
+			<div class="col-3 d-flex align-items-center justify-content-center" style="height: 100%;">
+				{% include 'navbar_buttons.html.twig' %}
+			</div>			
 		</div>
 	</div>
-</div>
+</nav>

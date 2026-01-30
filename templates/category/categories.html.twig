@@ -1,0 +1,25 @@
+<style>
+	.category-badge {
+		background-color: #f8f8f8ad;
+		transition: background-color .2s;
+		text-decoration: none;
+		color: black;
+	}
+
+	.category-badge:hover {
+		background-color: #e0e0e0;
+	}
+</style>
+
+<div class="row g-1 justify-content-center w-100">
+	{% for category in categories %}
+		<a class="col-auto m-1 p-2 category-badge" href="{{ path('product_index', {
+			asort: category.getId,
+			q: app.request.query.get('q')
+		}) }}">
+			{{ category.getName }}
+		</a>
+	{% else %}
+		<div class="text-muted">Brak kategorii</div>
+	{% endfor %}
+</div>

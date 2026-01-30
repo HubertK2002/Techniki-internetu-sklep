@@ -1,0 +1,182 @@
+{# components/mainpage/gallery.html.twig #}
+
+<style>
+	/* tło całego bloku */
+	.mainpage-gallery{
+		height: 400px;
+		background-image: url('{{ asset('images/bg1.jpg') }}');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	/* ramka (gradient ze stopów) */
+	.gallery-frame{
+		width: 932px;
+		height: 354px;
+		padding: 2px;
+		border-radius: 18px;
+		background: linear-gradient(90deg,
+			#926320 21%,
+			#FFF2C5 29%,
+			#C28D43 38%,
+			#FFF9B8 50%,
+			#AA701D 57%,
+			#FFF7C9 61%,
+			#C78E3F 68%,
+			#FFEFB1 74%,
+			#CF9B53 81%,
+			#FFF6D4 87%,
+			#C89042 92%
+		);
+	}
+
+	/* okno na slajdy */
+	.gallery-window{
+		border-radius: 18px;
+		overflow: hidden;
+		background: rgba(255,255,255,1.0);
+		backdrop-filter: blur(2px);
+		touch-action: pan-y; /* pozwala na swipe w poziomie */
+		user-select: none;
+	}
+
+	.mp-track{
+		display: flex;
+		width: 100%;
+		transition: transform .55s ease;
+	}
+
+	.mp-slide{
+		flex: 0 0 100%;
+		height: 350px;
+	}
+
+	/* placeholdery slajdów (na razie kolory/gradienty) */
+	.mp-slide.s1{ background: linear-gradient(120deg, rgba(255,255,255,.25), rgba(0,0,0,.10)); }
+	.mp-slide.s2{ background: linear-gradient(120deg, rgba(255,240,200,.35), rgba(120,60,10,.10)); }
+	.mp-slide.s3{ background: linear-gradient(120deg, rgba(240,255,220,.35), rgba(20,80,20,.10)); }
+	.mp-slide.s4{ background: linear-gradient(120deg, rgba(220,240,255,.35), rgba(10,40,120,.10)); }
+	.mp-slide.s5{ background: linear-gradient(120deg, rgba(255,220,240,.35), rgba(120,10,70,.10)); }
+
+	/* kropki pod ramką */
+	.mp-dots{
+		display: flex;
+		justify-content: center;
+		gap: 8px;
+		padding-top: 10px;
+	}
+
+	.mp-dot{
+		width: 10px;
+		height: 10px;
+		border-radius: 999px;
+		border: 0;
+		padding: 0;
+		cursor: pointer;
+		background: linear-gradient(90deg, #FEDEB2 10%, #FFEFB1 33%, #C78E3F 100%);
+		opacity: .55;
+		transition: transform .15s ease, opacity .15s ease;
+	}
+
+	.mp-dot.active{
+		opacity: 1;
+		transform: scale(1.25);
+	}
+</style>
+
+<div class="mainpage-gallery w-100 d-flex align-items-center justify-content-center">
+	<div class="mp-slider gallery-frame" data-interval="3500">
+		<div class="gallery-window">
+			<div class="mp-track">
+				<div class="mp-slide s1"></div>
+				<div class="mp-slide s2"></div>
+				<div class="mp-slide s3"></div>
+				<div class="mp-slide s4"></div>
+				<div class="mp-slide s5"></div>
+			</div>
+		</div>
+
+		<div class="mp-dots">
+			<button class="mp-dot active" type="button" aria-label="Slide 1"></button>
+			<button class="mp-dot" type="button" aria-label="Slide 2"></button>
+			<button class="mp-dot" type="button" aria-label="Slide 3"></button>
+			<button class="mp-dot" type="button" aria-label="Slide 4"></button>
+			<button class="mp-dot" type="button" aria-label="Slide 5"></button>
+		</div>
+	</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	document.querySelectorAll('.mp-slider').forEach((slider) => {
+		const track = slider.querySelector('.mp-track');
+		const slides = Array.from(slider.querySelectorAll('.mp-slide'));
+		const dots = Array.from(slider.querySelectorAll('.mp-dot'));
+		const windowEl = slider.querySelector('.gallery-window');
+
+		let idx = 0;
+		let timer = null;
+		const interval = Number(slider.dataset.interval || 4000);
+
+		function go(i){
+			idx = (i + slides.length) % slides.length;
+			track.style.transform = `translateX(${-idx * 100}%)`;
+			dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+		}
+
+		function start(){
+			stop();
+			timer = setInterval(() => go(idx + 1), interval);
+		}
+
+		function stop(){
+			if(timer){
+				clearInterval(timer);
+				timer = null;
+			}
+		}
+
+		dots.forEach((d, k) => {
+			d.addEventListener('click', () => {
+				go(k);
+				start();
+			});
+		});
+
+		// pauza na hover
+		slider.addEventListener('mouseenter', stop);
+		slider.addEventListener('mouseleave', start);
+
+		// swipe / przeciąganie myszką
+		let startX = null;
+		let delta = 0;
+
+		windowEl.addEventListener('pointerdown', (e) => {
+			startX = e.clientX;
+			delta = 0;
+			stop();
+			windowEl.setPointerCapture?.(e.pointerId);
+		});
+
+		windowEl.addEventListener('pointermove', (e) => {
+			if(startX === null) return;
+			delta = e.clientX - startX;
+		});
+
+		function endDrag(){
+			if(startX === null) return;
+			if(Math.abs(delta) > 50){
+				go(idx + (delta < 0 ? 1 : -1));
+			}
+			startX = null;
+			start();
+		}
+
+		windowEl.addEventListener('pointerup', endDrag);
+		windowEl.addEventListener('pointercancel', endDrag);
+
+		start();
+	});
+});
+</script>

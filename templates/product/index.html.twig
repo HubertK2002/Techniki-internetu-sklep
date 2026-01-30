@@ -4,21 +4,15 @@
 {% block title %}Produkty{% endblock %}
 
 {% block body %}
-	<div class="container py-4">
-		<h1 class="mb-4">Kategorie</h1>
-		{{ include('category/categories_grid.html.twig', { categories: categories }) }}
-		<h1 class="mb-4">Produkty</h1>
-		{{ include('product/search_form.html.twig', {
-			q: q,
-			asort: asort,
-			limit: limit,
-			route_name: 'product_index'
-		}) }}
-		{{ include('product/product_list.html.twig', {
-			products: products,
-			page: page,
-			total_pages: total_pages,
-			route_name: 'product_index'
-		}) }}
+	<div class="container py-4 d-flex justify-content-center">
+		<div class="w-75">
+			<h1 class="mb-4">Produkty</h1>
+			{{ include('product/product_list.html.twig', {
+				products: products,
+				page: page,
+				total_pages: total_pages,
+				route_name: 'product_index'
+			}) }}
+		</div>
 	</div>
 {% endblock %}

@@ -1,0 +1,40 @@
+{% set route_name = route_name|default('product_index') %}
+
+<div class="w-100"
+	style="background-image: linear-gradient(90deg,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEFB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%
+	); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
+	<div class="d-flex align-items-center">
+		<div class="flex-shrink-0 ps-1 pe-2">
+			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="11" cy="11" r="8"></circle>
+				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+			</svg>
+		</div>
+
+		<div class="flex-grow-1">
+			<form method="get" class="mb-3 d-flex gap-2">
+				<input type="text" class="form-control border-0 shadow-none px-0 bg-transparent" placeholder="Szukaj" aria-label="Szukaj" name="q" value="{{ q|default('') }}">
+				<input type="hidden" name="asort" value="{{ asort|default(0) }}">
+				<input type="hidden" name="limit" value="{{ limit|default(24) }}">
+
+				{% if q is defined and q %}
+					<a class="btn btn-outline-secondary"
+					   href="{{ path(route_name, { asort: asort|default(0), limit: limit|default(24) }) }}">
+						Wyczyść
+					</a>
+				{% endif %}
+			</form>
+		</div>
+	</div>
+</div>
