@@ -19,6 +19,7 @@ GRANT CREATE ON *.* TO 'appuser'@'%';
 FLUSH PRIVILEGES;
 ```
 !Wymagane zainstalowane php8.4-mysql `apt install php8.4-mysql`
+
 3. Aby stworzyć bazę danych 
   `php bin/console doctrine:database:create`
 4. Aby odtworzyć schemat bazy
