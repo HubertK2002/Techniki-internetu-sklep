@@ -4,15 +4,70 @@
 {% block title %}Produkty{% endblock %}
 
 {% block body %}
-	<div class="container py-4 d-flex justify-content-center">
-		<div class="w-75">
-			<h1 class="mb-4">Produkty</h1>
-			{{ include('product/product_list.html.twig', {
-				products: products,
-				page: page,
-				total_pages: total_pages,
-				route_name: 'product_index'
-			}) }}
+	<div class="container py-4" style="width: 90%;">
+		<div class="row">
+			<div class="col-3"></div>
+			<div class="col-9"><h1 class="mb-4 h-title">Produkty</h1></div>
+		</div>
+		<div class="row">
+			<div class="col-3 gradient-border p-3" style="height: auto;">
+				<h3 class="h-title" style="margin-bottom: -15px;">Kategorie:</h3>
+				{{ render(path('subcategories', {
+					asort: app.request.query.get('asort'),
+					q: app.request.query.get('q')
+				})) }}
+			</div>
+			<div class="col-9">
+				{{ include('product/product_list.html.twig', {
+					products: products,
+					page: page,
+					total_pages: total_pages,
+					route_name: 'product_index'
+				}) }}
+			</div>
 		</div>
 	</div>
+<style>
+.gradient-border{
+	position: relative;
+	border-radius: 16px;
+	background: #fff;              /* tło środka */
+	height: fit-content;
+	align-self: flex-start;
+}
+
+.gradient-border::before{
+	content: "";
+	position: absolute;
+	inset: 0;
+	padding: 2px;                  /* grubość ramki */
+	border-radius: inherit;
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEEB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%,
+		#C89042 100%
+	);
+	background-size: 260% 260%;
+	background-position: 20% 50%;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+</style>
+
 {% endblock %}
+

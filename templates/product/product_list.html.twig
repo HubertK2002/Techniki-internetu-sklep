@@ -3,7 +3,6 @@
 {% set radius = 2 %}
 
 <div class="container py-4">
-
 	<div class="products-grid">
 		{% for product in products %}
 			{{ include('product/product_card.html.twig', { product: product }) }}

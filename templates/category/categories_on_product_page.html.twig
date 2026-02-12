@@ -1,0 +1,87 @@
+<style>
+	.category-badge {
+		transition: background-color .2s;
+		text-decoration: none;
+		color: black;
+		display: inline-block;
+	}
+	.category-badge:hover { background-color: #e0e0e0; }
+</style>
+{% set activeCategoryId = app.request.query.get('asort') %}
+
+{% macro render_node(items, childrenByParent, nodeId, q, prefix, activeCategoryId) %}
+	{% set children = childrenByParent[nodeId] ?? [] %}
+	{% set c = items[nodeId] %}
+
+	{% if children is empty %}
+		<li class="my-1">
+			<a class="d-inline-block px-2 category-link {{ (activeCategoryId == c.id ~ '') ? 'is-active' : '' }}"
+			   href="{{ path('product_index', { asort: c.id, q: q }) }}">
+				{{ c.name }}
+			</a>
+		</li>
+	{% else %}
+		{% set collapseId = prefix ~ '-' ~ nodeId %}
+		<li class="my-1">
+			<div class="d-flex align-items-center gap-1 {{ (activeCategoryId == c.id ~ '') ? 'is-active' : '' }}">
+				<a class="d-block px-2 category-link"
+				   href="{{ path('product_index', { asort: c.id, q: q }) }}">
+					{{ c.name }}
+				</a>
+				<button class="btn btn-sm btn-link p-0 text-decoration-none"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#{{ collapseId }}"
+						aria-expanded="false"
+						aria-controls="{{ collapseId }}">
+					<span class="category-toggle">▸</span>
+				</button>
+			</div>
+
+			<div class="collapse category-collapse ms-4 mt-1" id="{{ collapseId }}">
+				<ul class="list-unstyled">
+					{% for childId in children %}
+						{{ _self.render_node(items, childrenByParent, childId, q, prefix ~ '-' ~ nodeId, activeCategoryId) }}
+					{% endfor %}
+				</ul>
+			</div>
+		</li>
+	{% endif %}
+{% endmacro %}
+
+<style>
+	.category-link{
+		border-radius: 10px;
+		color:#000;
+		text-decoration:none;
+		transition: .2s background-color;
+		font-size: medium;
+	}
+	li li a.category-link{
+		font-size: small;
+	}
+	.category-link:hover{ background:#e0e0e0; }
+	.category-toggle{ display:inline-block; width: 1.2em; }
+	/* opcjonalnie: obrót strzałki gdy otwarte */
+	button[aria-expanded="true"] .category-toggle{ transform: rotate(90deg); }
+	.is-active{
+		background: #23BDB0;
+		color: white;
+		border-radius: 10px;
+	}
+</style>
+<div
+	data-controller="category-menu"
+	data-category-menu-storage-key-value="category_menu_open_v1"
+>
+	{% if roots is empty %}
+		<div class="text-muted">Brak kategorii</div>
+	{% else %}
+		<ul class="list-unstyled p-4 body-text">
+			{% for rootId in roots %}
+				{{ _self.render_node(items, childrenByParent, rootId, q, 'cat', activeCategoryId) }}
+			{% endfor %}
+		</ul>
+	{% endif %}
+</div>
+

@@ -15,7 +15,7 @@ final class ProductFixtures extends Fixture implements DependentFixtureInterface
 	{
 		$faker = Factory::create('pl_PL');
 
-		for ($i = 1; $i <= 4500; $i++) {
+		for ($i = 1; $i <= 10000; $i++) {
 			$product = new Product();
 
 			$product->setName($faker->unique()->words(mt_rand(2, 4), true));

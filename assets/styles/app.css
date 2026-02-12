@@ -47,3 +47,10 @@ body {
 .category-tile__name{
 	font-weight:600;
 }
+
+:root{
+	--teal-dark: #004246;
+}
+
+.h-title { font-family: "Galada", cursive; font-weight: 400; letter-spacing: 0; color: var(--teal-dark); }
+.body-text { font-family: "Playfair Display", serif; }

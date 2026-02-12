@@ -10,7 +10,7 @@
 			{% if app.user %}
 				<div class="alert alert-info d-flex justify-content-between align-items-center">
 					<div>
-						You are logged in as <strong>{{ app.user.userIdentifier }}</strong>.
+						Jesteś zalogowany jako <strong>{{ app.user.userIdentifier }}</strong>.
 					</div>
 					<a class="btn btn-sm btn-outline-secondary" href="{{ path('app_logout') }}">Logout</a>
 				</div>
@@ -42,7 +42,7 @@
 						</div>
 
 						<div class="mb-3">
-							<label for="inputPassword" class="form-label">Password</label>
+							<label for="inputPassword" class="form-label">Hasło</label>
 							<input
 								type="password"
 								name="password"
@@ -57,19 +57,19 @@
 
 						<div class="form-check mb-3">
 							<input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
-							<label class="form-check-label" for="rememberMe">Remember me</label>
+							<label class="form-check-label" for="rememberMe">Zapamiętaj dane logowania</label>
 						</div>
 
 						<button class="btn btn-primary w-100" type="submit">
-							Sign in
+							Zaloguj
 						</button>
 					</form>
 
 					<hr class="my-4">
 
 					<div class="d-flex justify-content-between small">
-						<a href="{{ path('app_register') }}">Create account</a>
-						<a href="{{ path('app_resend_verification_email') }}">Resend verification email</a>
+						<a href="{{ path('app_register') }}">Utwórz konto</a>
+						<a href="{{ path('app_resend_verification_email') }}">Wyślij ponownie mail aktywacyjny</a>
 					</div>
 				</div>
 			</div>
