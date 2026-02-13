@@ -16,9 +16,10 @@
 				</div>
 			{% endif %}
 
-			<div class="card shadow-sm">
+			<div class="body-text">
 				<div class="card-body p-4">
-					<h1 class="h3 mb-3">Sign in</h1>
+					<h1 class="h3 h-title text-center">Logowanie</h1>
+					<small><p class="text-center">Witaj z powrotem! Zaloguj się do swojego konta.</p></small>
 
 					{% if error %}
 						<div class="alert alert-danger">
@@ -27,40 +28,68 @@
 					{% endif %}
 
 					<form method="post" novalidate>
-						<div class="mb-3">
-							<label for="inputEmail" class="form-label">Email</label>
-							<input
-								type="email"
-								value="{{ last_username }}"
-								name="email"
-								id="inputEmail"
-								class="form-control"
-								autocomplete="email"
-								required
-								autofocus
-							>
+						<div class="w-100" style="background-image: linear-gradient(90deg,
+							#926320 21%,
+							#FFF2C5 29%,
+							#C28D43 38%,
+							#FFF9B8 50%,
+							#AA701D 57%,
+							#FFF7C9 61%,
+							#C78E3F 68%,
+							#FFEFB1 74%,
+							#CF9B53 81%,
+							#FFF6D4 87%,
+							#C89042 92%
+						); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
+							<div class="flex-grow-1 mb-3">
+								<input
+									type="email"
+									value="{{ last_username }}"
+									name="email"
+									id="inputEmail"
+									class="form-control border-0 shadow-none px-0 bg-transparent"
+									autocomplete="email"
+									required
+									autofocus
+									placeholder="E-mail"
+								>
+							</div>
 						</div>
-
-						<div class="mb-3">
-							<label for="inputPassword" class="form-label">Hasło</label>
-							<input
-								type="password"
-								name="password"
-								id="inputPassword"
-								class="form-control"
-								autocomplete="current-password"
-								required
-							>
+						<div class="w-100" style="background-image: linear-gradient(90deg,
+							#926320 21%,
+							#FFF2C5 29%,
+							#C28D43 38%,
+							#FFF9B8 50%,
+							#AA701D 57%,
+							#FFF7C9 61%,
+							#C78E3F 68%,
+							#FFEFB1 74%,
+							#CF9B53 81%,
+							#FFF6D4 87%,
+							#C89042 92%
+						); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
+							<div class="flex-grow-1 mb-3">
+								<input
+									type="password"
+									value="{{ last_username }}"
+									name="password"
+									id="inputPassword"
+									class="form-control border-0 shadow-none px-0 bg-transparent"
+									autocomplete="current-password"
+									required
+									placeholder="Hasło"
+								>
+							</div>
 						</div>
 
 						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
 						<div class="form-check mb-3">
-							<input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
-							<label class="form-check-label" for="rememberMe">Zapamiętaj dane logowania</label>
+							<input type="checkbox" name="_remember_me" id="rememberMe" style="margin-right:5px;">
+							<label class="form-check-label" for="rememberMe">Zapamiętaj mnie</label>
 						</div>
 
-						<button class="btn btn-primary w-100" type="submit">
+						<button class="btn btn-primary w-100 border-0" type="submit" style="background-color: #23BDB0;">
 							Zaloguj
 						</button>
 					</form>

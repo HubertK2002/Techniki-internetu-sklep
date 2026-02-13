@@ -3,30 +3,37 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<div class="container py-5">
+<div class="container py-5 body-text">
 	<div class="row justify-content-center">
 		<div class="col-12 col-sm-10 col-md-8 col-lg-5">
 			<div class="card shadow-sm">
 				<div class="card-body p-4">
-					<h1 class="h3 mb-3">Create account</h1>
+					<h1 class="h3 mb-3 h-title text-center">Rejestracja</h1>
 
 					{% for flash_error in app.flashes('verify_email_error') %}
 						<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 					{% endfor %}
 
 					{{ form_start(registrationForm, { attr: { novalidate: 'novalidate' } }) }}
-
-						{{ include('form/field.html.twig', { field: registrationForm.email }) }}
-						{{ include('form/field.html.twig', { field: registrationForm.firstName }) }}
-						{{ include('form/field.html.twig', { field: registrationForm.lastName }) }}
+						<div class="row">
+							<div class="col-6">
+								{{ include('form/field.html.twig', { field: registrationForm.firstName }) }}
+							</div>
+							<div class="col-6">
+								{{ include('form/field.html.twig', { field: registrationForm.lastName }) }}
+							</div>
+						</div>
+						{{ include('form/field.html.twig', { field: registrationForm.email }) }}			
+						
 						{{ include('form/field.html.twig', { field: registrationForm.plainPassword }) }}
+						{{ include('form/field.html.twig', { field: registrationForm.confirmPassword }) }}
 						{{ include('form/checkbox.html.twig', { field: registrationForm.agreeTerms }) }}
 
-						<button type="submit" class="btn btn-primary w-100">
-							Register
+						<button type="submit" class="btn btn-primary w-100 border-0" style="background-color: #23BDB0;">
+							Załóż konto
 						</button>
 
-					{{ form_end(registrationForm) }}
+					{{ form_end(registrationForm, { render_rest: false }) }}
 
 					<hr class="my-4">
 
@@ -37,9 +44,6 @@
 				</div>
 			</div>
 
-			<div class="text-center text-body-secondary small mt-3">
-				By creating an account, you agree to the terms.
-			</div>
 		</div>
 	</div>
 </div>

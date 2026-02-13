@@ -3,11 +3,18 @@
 <div class="form-check mb-3">
 	{{ form_widget(registrationForm.agreeTerms, {
 		attr: {
-			class: 'form-check-input' ~ (hasError ? ' is-invalid' : '')
+			id: 'rememberMe',
+			style: 'margin-right:5px; margin-left:-5px;',
+			class: '' ~ (hasError ? ' is-invalid' : '')
 		}
 	}) }}
 
-	{{ form_label(registrationForm.agreeTerms, null, { label_attr: { class: 'form-check-label' } }) }}
+	{{ form_label(registrationForm.agreeTerms, 'Zapamiętaj mnie', {
+		label_attr: {
+			class: 'form-check-label',
+			for: 'rememberMe'
+		}
+	}) }}
 
 	{% if hasError %}
 		<div class="invalid-feedback d-block">

@@ -1,15 +1,45 @@
 {% set hasError = field.vars.errors|length > 0 %}
+{% set id = field.vars.id %}
+{% set name = field.vars.full_name %}
+{% set required = field.vars.required %}
+{% set value = field.vars.value %}
+{% set type = field.vars.type|default('text') %}
+
 {% set attr = field.vars.attr|merge({
-	class: (field.vars.attr.class|default('form-control')) ~ (hasError ? ' is-invalid' : '')
+	class: (field.vars.attr.class|default('my-input')) ~ (hasError ? ' my-input--error' : '')
 }) %}
 
-<div class="mb-3">
-	{{ form_label(field, null, { label_attr: { class: 'form-label' } }) }}
-	{{ form_widget(field, { attr: attr }) }}
-
-	{% if hasError %}
-		<div class="invalid-feedback d-block">
-			{{ form_errors(field) }}
-		</div>
-	{% endif %}
+<div class="w-100" style="background-image: linear-gradient(90deg,
+	#926320 21%,
+	#FFF2C5 29%,
+	#C28D43 38%,
+	#FFF9B8 50%,
+	#AA701D 57%,
+	#FFF7C9 61%,
+	#C78E3F 68%,
+	#FFEFB1 74%,
+	#CF9B53 81%,
+	#FFF6D4 87%,
+	#C89042 92%
+); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
+	<div class="flex-grow-1 mb-3">
+		<input
+			type="{{ type }}"
+			id="{{ id }}"
+			name="{{ name }}"
+			{% if required %}required{% endif %}
+			{% if type != 'password' %}value="{{ value }}"{% endif %}
+			class="form-control border-0 shadow-none px-0 bg-transparent"
+			placeholder="{{ field.vars.label|trans }}"
+			{% for k, v in attr %}
+				{% if k in ['class','placeholder'] %}
+					{# skip #}
+				{% elseif v is same as(true) %}
+					{{- ' ' ~ k -}}
+				{% elseif v is not same as(false) and v is not null %}
+					{{- ' ' ~ k ~ '="' ~ v|e('html_attr') ~ '"' -}}
+				{% endif %}
+			{% endfor %}
+		/>
+	</div>
 </div>

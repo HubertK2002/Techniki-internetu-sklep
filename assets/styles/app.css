@@ -50,7 +50,42 @@ body {
 
 :root{
 	--teal-dark: #004246;
+	--greenblue: #23BDB0;
 }
 
 .h-title { font-family: "Galada", cursive; font-weight: 400; letter-spacing: 0; color: var(--teal-dark); }
 .body-text { font-family: "Playfair Display", serif; }
+
+input[type="checkbox"] {
+	width: 1.3em;
+    height: 1.3em;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+	position: relative;
+	display: inline-grid;
+	place-content: center;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--greenblue);
+}
+
+input[type="checkbox"]::after {
+	content: "";
+	width: 0.45em;
+	height: 0.25em;
+	border: 0.14em solid #fff;
+	border-top: 0;
+	border-right: 0;
+	transform: rotate(-45deg);
+	opacity: 0;
+}
+
+input[type="checkbox"]:checked::after {
+	opacity: 1;
+}

@@ -1,0 +1,15 @@
+form:
+  registration:
+    email: "E-mail"
+    first_name: "Imię"
+    last_name: "Nazwisko"
+    password: "Hasło"
+    agree_terms: "Akceptuję regulamin"
+    password_confirm: "Powtórz hasło"
+
+    errors:
+      agree_terms: "Musisz zaakceptować regulamin."
+      password_blank: "Wpisz hasło."
+      password_min: "Hasło musi mieć co najmniej {{ limit }} znaków."
+      password_confirm_blank: "Powtórz hasło."
+      password_confirm_mismatch: "Hasła muszą być takie same."
