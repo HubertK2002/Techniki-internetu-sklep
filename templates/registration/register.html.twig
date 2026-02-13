@@ -1,49 +1,59 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_artex.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
+{% block body_class %}d-flex flex-column min-vh-100{% endblock %}
+
 {% block body %}
-<div class="container py-5 body-text">
-	<div class="row justify-content-center">
-		<div class="col-12 col-sm-10 col-md-8 col-lg-5">
-			<div class="card shadow-sm">
-				<div class="card-body p-4">
-					<h1 class="h3 mb-3 h-title text-center">Rejestracja</h1>
-
-					{% for flash_error in app.flashes('verify_email_error') %}
-						<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-					{% endfor %}
-
-					{{ form_start(registrationForm, { attr: { novalidate: 'novalidate' } }) }}
-						<div class="row">
-							<div class="col-6">
-								{{ include('form/field.html.twig', { field: registrationForm.firstName }) }}
-							</div>
-							<div class="col-6">
-								{{ include('form/field.html.twig', { field: registrationForm.lastName }) }}
-							</div>
-						</div>
-						{{ include('form/field.html.twig', { field: registrationForm.email }) }}			
-						
-						{{ include('form/field.html.twig', { field: registrationForm.plainPassword }) }}
-						{{ include('form/field.html.twig', { field: registrationForm.confirmPassword }) }}
-						{{ include('form/checkbox.html.twig', { field: registrationForm.agreeTerms }) }}
-
-						<button type="submit" class="btn btn-primary w-100 border-0" style="background-color: #23BDB0;">
-							Załóż konto
+<div class="container-fluid py-2 px-0 flex-grow-1 d-flex m-0 body-text">
+	<div class="row flex-grow-1 m-0">
+		<div class="col-4 h-100 d-flex" style="position: relative;">
+			{% embed 'components/welcome_back.html.twig' %}
+				{% block content %}
+					<a href="{{ path('app_login') }}" class="align-self-center d-inline-block">
+						<button class="btn btn-primary border-0 py-2 px-3 align-self-center" type="submit" style="color: #23BDB0; background-color: white; font-weight: bold;">
+							Zaloguj się
 						</button>
+					</a>
+				{% endblock %}
+			{% endembed %}
+		</div>
+		<div class="col-8 d-flex flex-column justify-content-center">
+			<div class="row justify-content-center">
+				<div class="col-12 col-sm-10 col-md-8 col-lg-5">
+					<div>
+						<div class="p-4">
+							<h1 class="h3 mb-3 h-title text-center">Rejestracja</h1>
 
-					{{ form_end(registrationForm, { render_rest: false }) }}
+							{% for flash_error in app.flashes('verify_email_error') %}
+								<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+							{% endfor %}
 
-					<hr class="my-4">
+							{{ form_start(registrationForm, { attr: { novalidate: 'novalidate' } }) }}
+								<div class="row">
+									<div class="col-6">
+										{{ include('form/field.html.twig', { field: registrationForm.firstName }) }}
+									</div>
+									<div class="col-6">
+										{{ include('form/field.html.twig', { field: registrationForm.lastName }) }}
+									</div>
+								</div>
+								{{ include('form/field.html.twig', { field: registrationForm.email }) }}			
+								
+								{{ include('form/field.html.twig', { field: registrationForm.plainPassword }) }}
+								{{ include('form/field.html.twig', { field: registrationForm.confirmPassword }) }}
+								{{ include('form/checkbox.html.twig', { field: registrationForm.agreeTerms }) }}
 
-					<div class="text-center small">
-						Already have an account?
-						<a href="{{ path('app_login') }}">Sign in</a>
+								<button type="submit" class="btn btn-primary w-100 border-0" style="background-color: #23BDB0;">
+									Załóż konto
+								</button>
+
+							{{ form_end(registrationForm, { render_rest: false }) }}
+						</div>
 					</div>
+
 				</div>
 			</div>
-
 		</div>
 	</div>
 </div>

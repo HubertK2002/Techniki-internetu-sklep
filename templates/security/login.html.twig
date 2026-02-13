@@ -1,108 +1,124 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_artex.html.twig' %}
 
 {% block title %}Sign in{% endblock %}
 
+{% block body_class %}d-flex flex-column min-vh-100{% endblock %}
+
 {% block body %}
-<div class="container py-5">
-	<div class="row justify-content-center">
-		<div class="col-12 col-sm-10 col-md-8 col-lg-5">
+<div class="container-fluid py-2 px-0 flex-grow-1 d-flex m-0 body-text">
+	<div class="row flex-grow-1 m-0">
+		<div class="col-4 h-100 d-flex" style="position: relative;">
+			{% embed 'components/welcome_back.html.twig' %}
+				{% block content %}
+					<a href="{{ path('app_register') }}" class="align-self-center d-inline-block">
+						<button class="btn btn-primary border-0 py-2 px-3 align-self-center" type="submit" style="color: #23BDB0; background-color: white; font-weight: bold;">
+							Załóż nowe konto
+						</button>
+					</a>
+				{% endblock %}
+			{% endembed %}
+		</div>
+		<div class="col-8 d-flex flex-column justify-content-center">
+			<div class="row justify-content-center">
+				<div class="col-6">
 
-			{% if app.user %}
-				<div class="alert alert-info d-flex justify-content-between align-items-center">
-					<div>
-						Jesteś zalogowany jako <strong>{{ app.user.userIdentifier }}</strong>.
-					</div>
-					<a class="btn btn-sm btn-outline-secondary" href="{{ path('app_logout') }}">Logout</a>
-				</div>
-			{% endif %}
-
-			<div class="body-text">
-				<div class="card-body p-4">
-					<h1 class="h3 h-title text-center">Logowanie</h1>
-					<small><p class="text-center">Witaj z powrotem! Zaloguj się do swojego konta.</p></small>
-
-					{% if error %}
-						<div class="alert alert-danger">
-							{{ error.messageKey|trans(error.messageData, 'security') }}
+					{% if app.user %}
+						<div class="alert alert-info d-flex justify-content-between align-items-center">
+							<div>
+								Jesteś zalogowany jako <strong>{{ app.user.userIdentifier }}</strong>.
+							</div>
+							<a class="btn btn-sm btn-outline-secondary" href="{{ path('app_logout') }}">Logout</a>
 						</div>
 					{% endif %}
 
-					<form method="post" novalidate>
-						<div class="w-100" style="background-image: linear-gradient(90deg,
-							#926320 21%,
-							#FFF2C5 29%,
-							#C28D43 38%,
-							#FFF9B8 50%,
-							#AA701D 57%,
-							#FFF7C9 61%,
-							#C78E3F 68%,
-							#FFEFB1 74%,
-							#CF9B53 81%,
-							#FFF6D4 87%,
-							#C89042 92%
-						); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
-							<div class="flex-grow-1 mb-3">
-								<input
-									type="email"
-									value="{{ last_username }}"
-									name="email"
-									id="inputEmail"
-									class="form-control border-0 shadow-none px-0 bg-transparent"
-									autocomplete="email"
-									required
-									autofocus
-									placeholder="E-mail"
-								>
+					<div class="body-text">
+						<div class="card-body p-4">
+							<h1 class="h3 h-title text-center">Logowanie</h1>
+							<small><p class="text-center">Witaj z powrotem! Zaloguj się do swojego konta.</p></small>
+
+							{% if error %}
+								<div class="alert alert-danger">
+									{{ error.messageKey|trans(error.messageData, 'security') }}
+								</div>
+							{% endif %}
+
+							<form method="post" novalidate>
+								<div class="w-100" style="background-image: linear-gradient(90deg,
+									#926320 21%,
+									#FFF2C5 29%,
+									#C28D43 38%,
+									#FFF9B8 50%,
+									#AA701D 57%,
+									#FFF7C9 61%,
+									#C78E3F 68%,
+									#FFEFB1 74%,
+									#CF9B53 81%,
+									#FFF6D4 87%,
+									#C89042 92%
+								); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
+									<div class="flex-grow-1 mb-3">
+										<input
+											type="email"
+											value="{{ last_username }}"
+											name="email"
+											id="inputEmail"
+											class="form-control border-0 shadow-none px-0 bg-transparent"
+											autocomplete="email"
+											required
+											autofocus
+											placeholder="E-mail"
+										>
+									</div>
+								</div>
+								<div class="w-100" style="background-image: linear-gradient(90deg,
+									#926320 21%,
+									#FFF2C5 29%,
+									#C28D43 38%,
+									#FFF9B8 50%,
+									#AA701D 57%,
+									#FFF7C9 61%,
+									#C78E3F 68%,
+									#FFEFB1 74%,
+									#CF9B53 81%,
+									#FFF6D4 87%,
+									#C89042 92%
+								); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
+									<div class="flex-grow-1 mb-3">
+										<input
+											type="password"
+											value="{{ last_username }}"
+											name="password"
+											id="inputPassword"
+											class="form-control border-0 shadow-none px-0 bg-transparent"
+											autocomplete="current-password"
+											required
+											placeholder="Hasło"
+										>
+									</div>
+								</div>
+
+								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+								<div class="form-check mb-3">
+									<input type="checkbox" name="_remember_me" id="rememberMe" style="margin-right:5px;">
+									<label class="form-check-label" for="rememberMe">Zapamiętaj mnie</label>
+								</div>
+
+								<button class="btn btn-primary w-100 border-0" type="submit" style="background-color: #23BDB0;">
+									Zaloguj
+								</button>
+							</form>
+
+							<hr class="my-4">
+
+							<div class="d-flex justify-content-between small">
+								<a href="{{ path('app_resend_verification_email') }}">Wyślij ponownie mail aktywacyjny</a>
 							</div>
 						</div>
-						<div class="w-100" style="background-image: linear-gradient(90deg,
-							#926320 21%,
-							#FFF2C5 29%,
-							#C28D43 38%,
-							#FFF9B8 50%,
-							#AA701D 57%,
-							#FFF7C9 61%,
-							#C78E3F 68%,
-							#FFEFB1 74%,
-							#CF9B53 81%,
-							#FFF6D4 87%,
-							#C89042 92%
-						); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;">
-							<div class="flex-grow-1 mb-3">
-								<input
-									type="password"
-									value="{{ last_username }}"
-									name="password"
-									id="inputPassword"
-									class="form-control border-0 shadow-none px-0 bg-transparent"
-									autocomplete="current-password"
-									required
-									placeholder="Hasło"
-								>
-							</div>
-						</div>
-
-						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-						<div class="form-check mb-3">
-							<input type="checkbox" name="_remember_me" id="rememberMe" style="margin-right:5px;">
-							<label class="form-check-label" for="rememberMe">Zapamiętaj mnie</label>
-						</div>
-
-						<button class="btn btn-primary w-100 border-0" type="submit" style="background-color: #23BDB0;">
-							Zaloguj
-						</button>
-					</form>
-
-					<hr class="my-4">
-
-					<div class="d-flex justify-content-between small">
-						<a href="{{ path('app_register') }}">Utwórz konto</a>
-						<a href="{{ path('app_resend_verification_email') }}">Wyślij ponownie mail aktywacyjny</a>
 					</div>
+
 				</div>
 			</div>
-
 		</div>
 	</div>
 </div>

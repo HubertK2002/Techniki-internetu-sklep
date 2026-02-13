@@ -1,5 +1,6 @@
 body {
     background-color: skyblue;
+	min-height: 100vh;
 }
 
 .products-grid{
