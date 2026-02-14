@@ -42,7 +42,7 @@
 			</button>
 
 			{% if app.user %}
-				<form method="post" action="{{ path('wishlist_add', { id: product.id }) }}" class="m-0">
+				<form method="post" action="{{ path('wishlist_add', { id: product.id }) }}" class="m-0 js-wishlist-form" data-wishlist-action="add" data-product-id="{{ product.id }}">
 					<input type="hidden" name="_token" value="{{ csrf_token('wishlist_add_' ~ product.id) }}">
 					<button type="submit" class="btn btn-sm btn-outline-danger">Serce</button>
 				</form>

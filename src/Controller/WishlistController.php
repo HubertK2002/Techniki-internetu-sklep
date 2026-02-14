@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\WishlistRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,17 +48,27 @@ final class WishlistController extends AbstractController
 		}
 
 		if (!$this->isCsrfTokenValid('wishlist_add_'.$product->getId(), (string) $request->request->get('_token'))) {
+			if ($request->isXmlHttpRequest()) {
+				return new JsonResponse(['ok' => false, 'error' => 'invalid_csrf'], 400);
+			}
 			$this->addFlash('error', 'Nieprawidlowy token formularza.');
 			return $this->redirectToRoute('product_index');
 		}
 
 		$wishlist = $wishlistRepository->findOneByUser($user);
 		if (!$wishlist) {
+			if ($request->isXmlHttpRequest()) {
+				return new JsonResponse(['ok' => false, 'error' => 'wishlist_not_found'], 404);
+			}
 			throw $this->createNotFoundException('Wishlist nie istnieje dla tego konta.');
 		}
 
 		$wishlist->addProduct($product);
 		$em->flush();
+
+		if ($request->isXmlHttpRequest()) {
+			return new JsonResponse(['ok' => true, 'action' => 'add', 'productId' => $product->getId()]);
+		}
 
 		return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('product_index'));
 	}
@@ -76,17 +87,27 @@ final class WishlistController extends AbstractController
 		}
 
 		if (!$this->isCsrfTokenValid('wishlist_remove_'.$product->getId(), (string) $request->request->get('_token'))) {
+			if ($request->isXmlHttpRequest()) {
+				return new JsonResponse(['ok' => false, 'error' => 'invalid_csrf'], 400);
+			}
 			$this->addFlash('error', 'Nieprawidlowy token formularza.');
 			return $this->redirectToRoute('wishlist_show');
 		}
 
 		$wishlist = $wishlistRepository->findOneByUser($user);
 		if (!$wishlist) {
+			if ($request->isXmlHttpRequest()) {
+				return new JsonResponse(['ok' => false, 'error' => 'wishlist_not_found'], 404);
+			}
 			throw $this->createNotFoundException('Wishlist nie istnieje dla tego konta.');
 		}
 
 		$wishlist->removeProduct($product);
 		$em->flush();
+
+		if ($request->isXmlHttpRequest()) {
+			return new JsonResponse(['ok' => true, 'action' => 'remove', 'productId' => $product->getId()]);
+		}
 
 		return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('wishlist_show'));
 	}

@@ -13,18 +13,24 @@
 		<div class="alert alert-success">{{ msg }}</div>
 	{% endfor %}
 
-	{% if wishlist.Products|length == 0 %}
-		<div class="alert alert-secondary">Twoja lista życzeń jest pusta.</div>
-	{% else %}
-		<div class="wish-grid">
+	<div id="wishlist-empty" class="alert alert-secondary {{ wishlist.Products|length == 0 ? '' : 'd-none' }}">Twoja lista życzeń jest pusta.</div>
+
+	{% if wishlist.Products|length > 0 %}
+		<div class="wish-grid" id="wishlist-grid">
 			{% for product in wishlist.Products %}
-					<div class="d-flex flex-column">
-						{{ include('product/product_card.html.twig', { product: product }) }}
-						<form method="post" action="{{ path('wishlist_remove', { id: product.id }) }}" class="mt-2">
-							<input type="hidden" name="_token" value="{{ csrf_token('wishlist_remove_' ~ product.id) }}">
-							<button class="btn btn-outline-danger btn-sm w-100" type="submit">Usuń z wishlisty</button>
-						</form>
-					</div>
+				<div class="d-flex flex-column" data-wishlist-item="{{ product.id }}">
+					{{ include('product/product_card.html.twig', { product: product }) }}
+					<form
+						method="post"
+						action="{{ path('wishlist_remove', { id: product.id }) }}"
+						class="mt-2 js-wishlist-form"
+						data-wishlist-action="remove"
+						data-product-id="{{ product.id }}"
+					>
+						<input type="hidden" name="_token" value="{{ csrf_token('wishlist_remove_' ~ product.id) }}">
+						<button class="btn btn-outline-danger btn-sm w-100" type="submit">Usuń z wishlisty</button>
+					</form>
+				</div>
 			{% endfor %}
 		</div>
 	{% endif %}

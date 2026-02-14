@@ -55,7 +55,7 @@ document.addEventListener('click', async (e) => {
 	}
 });
 </script>
-    <body class="{% block body_class %}{% endblock %}">
+    <body class="{% block body_class %}{% endblock %}" data-controller="wishlist">
 		{{ include('navbar.html.twig', { cart_count: cart_count|default(0) }) }}
         {% block body %}{% endblock %}
     </body>
