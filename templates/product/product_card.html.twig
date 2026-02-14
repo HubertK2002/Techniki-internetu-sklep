@@ -42,9 +42,16 @@
 			</button>
 
 			{% if app.user %}
+				{% set in_wishlist = app.user.wishlist and app.user.wishlist.hasProduct(product) %}
 				<form method="post" action="{{ path('wishlist_add', { id: product.id }) }}" class="m-0 js-wishlist-form" data-wishlist-action="add" data-product-id="{{ product.id }}">
 					<input type="hidden" name="_token" value="{{ csrf_token('wishlist_add_' ~ product.id) }}">
-					<button type="submit" class="btn btn-sm btn-outline-danger">Serce</button>
+					<button type="submit" class="p-0 border-0 bg-transparent">
+						{% if in_wishlist %}
+							<img src="{{ asset('images/heart_full.svg') }}" alt="Artex" height="20">
+						{% else %}
+							<img src="{{ asset('images/heart.svg') }}" alt="Artex" height="20">
+						{% endif %}
+					</button>
 				</form>
 			{% else %}
 				<a href="{{ path('app_login') }}" class="btn btn-sm btn-outline-secondary">Serce</a>
