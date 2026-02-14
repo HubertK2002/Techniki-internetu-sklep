@@ -20,16 +20,6 @@
 			{% for product in wishlist.Products %}
 				<div class="d-flex flex-column" data-wishlist-item="{{ product.id }}">
 					{{ include('product/product_card.html.twig', { product: product }) }}
-					<form
-						method="post"
-						action="{{ path('wishlist_remove', { id: product.id }) }}"
-						class="mt-2 js-wishlist-form"
-						data-wishlist-action="remove"
-						data-product-id="{{ product.id }}"
-					>
-						<input type="hidden" name="_token" value="{{ csrf_token('wishlist_remove_' ~ product.id) }}">
-						<button class="btn btn-outline-danger btn-sm w-100" type="submit">Usuń z wishlisty</button>
-					</form>
 				</div>
 			{% endfor %}
 		</div>
