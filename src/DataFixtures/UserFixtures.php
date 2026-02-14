@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\Wishlist;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -18,7 +19,6 @@ final class UserFixtures extends Fixture
 	{
 		$faker = Factory::create('pl_PL');
 
-		// ADMINI (stałe konta)
 		$admins = [
 			['email' => 'admin1@example.com', 'first' => 'Admin', 'last' => 'One'],
 			['email' => 'admin2@example.com', 'first' => 'Admin', 'last' => 'Two'],
@@ -31,14 +31,16 @@ final class UserFixtures extends Fixture
 			$user->setFirstName($a['first']);
 			$user->setLastName($a['last']);
 			$user->setIsVerified(true);
-
 			$user->setRoles(['ROLE_ADMIN']);
 			$user->setPassword($this->hasher->hashPassword($user, 'admin1234'));
 
+			$wishlist = new Wishlist();
+			$wishlist->setUser($user);
+
 			$manager->persist($user);
+			$manager->persist($wishlist);
 		}
 
-		// 30 przykładowych userów
 		for ($i = 1; $i <= 30; $i++) {
 			$user = new User();
 
@@ -46,11 +48,13 @@ final class UserFixtures extends Fixture
 			$user->setFirstName($faker->firstName());
 			$user->setLastName($faker->lastName());
 			$user->setIsVerified(true);
-
-			// hasło: test1234
 			$user->setPassword($this->hasher->hashPassword($user, 'test1234'));
 
+			$wishlist = new Wishlist();
+			$wishlist->setUser($user);
+
 			$manager->persist($user);
+			$manager->persist($wishlist);
 		}
 
 		$manager->flush();

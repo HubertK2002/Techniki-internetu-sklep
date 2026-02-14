@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Wishlist;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -18,8 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Form\ResendVerificationEmailType;
 use App\Security\UserAuthenticator;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface; 
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -40,7 +39,11 @@ class RegistrationController extends AbstractController
 
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
+            $wishlist = new Wishlist();
+            $wishlist->setUser($user);
+
             $entityManager->persist($user);
+            $entityManager->persist($wishlist);
             $entityManager->flush();
 
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
@@ -61,9 +64,9 @@ class RegistrationController extends AbstractController
 
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(
-		Request $request, 
-		TranslatorInterface $translator, 
-		UserRepository $userRepository, 	
+		Request $request,
+		TranslatorInterface $translator,
+		UserRepository $userRepository,
 		UserAuthenticatorInterface $userAuthenticator,
 		UserAuthenticator $authenticator
 	): Response

@@ -31,12 +31,24 @@
 				{% endif %}
 			{% endif %}
 		</div>
-		<button
-			type="button"
-			class="btn btn-sm btn-primary js-add-to-cart"
-			data-url="{{ path('cart_add', { id: product.id }) }}"
-		>
-			Dodaj do koszyka
-		</button>
+
+		<div class="d-flex gap-2 mt-2">
+			<button
+				type="button"
+				class="btn btn-sm btn-primary js-add-to-cart flex-grow-1"
+				data-url="{{ path('cart_add', { id: product.id }) }}"
+			>
+				Dodaj do koszyka
+			</button>
+
+			{% if app.user %}
+				<form method="post" action="{{ path('wishlist_add', { id: product.id }) }}" class="m-0">
+					<input type="hidden" name="_token" value="{{ csrf_token('wishlist_add_' ~ product.id) }}">
+					<button type="submit" class="btn btn-sm btn-outline-danger">Serce</button>
+				</form>
+			{% else %}
+				<a href="{{ path('app_login') }}" class="btn btn-sm btn-outline-secondary">Serce</a>
+			{% endif %}
+		</div>
 	</div>
 </div>

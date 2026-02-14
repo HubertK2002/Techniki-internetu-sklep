@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista życzeń{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+	<h1 class="mb-4">Lista życzeń</h1>
+
+	{% for msg in app.flashes('error') %}
+		<div class="alert alert-danger">{{ msg }}</div>
+	{% endfor %}
+	{% for msg in app.flashes('success') %}
+		<div class="alert alert-success">{{ msg }}</div>
+	{% endfor %}
+
+	{% if wishlist.Products|length == 0 %}
+		<div class="alert alert-secondary">Twoja lista życzeń jest pusta.</div>
+	{% else %}
+		<div class="wish-grid">
+			{% for product in wishlist.Products %}
+					<div class="d-flex flex-column">
+						{{ include('product/product_card.html.twig', { product: product }) }}
+						<form method="post" action="{{ path('wishlist_remove', { id: product.id }) }}" class="mt-2">
+							<input type="hidden" name="_token" value="{{ csrf_token('wishlist_remove_' ~ product.id) }}">
+							<button class="btn btn-outline-danger btn-sm w-100" type="submit">Usuń z wishlisty</button>
+						</form>
+					</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

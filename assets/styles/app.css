@@ -22,6 +22,25 @@ body {
 	.products-grid{ grid-template-columns:1fr; }
 }
 
+.wish-grid{
+	display:grid;
+	grid-template-columns:repeat(5, minmax(0, 1fr));
+	gap:16px;
+}
+
+@media (max-width: 1400px){
+	.wish-grid{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 1100px){
+	.wish-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 800px){
+	.wish-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px){
+	.wish-grid{ grid-template-columns:1fr; }
+}
+
 .pagination{ list-style:none; padding-left:0; }
 
 .categories-grid{

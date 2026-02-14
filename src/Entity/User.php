@@ -50,6 +50,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 	#[Assert\Length(min: 2, max: 50)]
     private ?string $lastName = null;
 
+    #[ORM\OneToOne(mappedBy: 'User', targetEntity: Wishlist::class, cascade: ['persist', 'remove'])]
+    private ?Wishlist $Wishlist = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -157,6 +160,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getWishlist(): ?Wishlist
+    {
+        return $this->Wishlist;
+    }
+
+    public function setWishlist(?Wishlist $Wishlist): static
+    {
+        $this->Wishlist = $Wishlist;
+
+        if ($Wishlist !== null && $Wishlist->getUser() !== $this) {
+            $Wishlist->setUser($this);
+        }
 
         return $this;
     }
