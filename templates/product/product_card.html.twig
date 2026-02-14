@@ -22,7 +22,23 @@
 			<div class="fw-semibold">
 				{{ product.Price|number_format(2, ',', ' ') }} zł
 			</div>
+			<div class="d-flex column gap-3">
+				<button
+					type="button"
+					class=" js-add-to-cart bg-transparent border-0 p-0"
+					data-url="{{ path('cart_add', { id: product.id }) }}"
+				>
+					<img src="{{ asset('images/shop_cart.svg') }}" alt="Artex" height="20">
+				</button>
+				{% set in_wishlist = app.user and app.user.wishlist and app.user.wishlist.hasProduct(product) %}
+				<div class="js-wishlist-toggle-container">
+					{{ include('wishlist/_toggle_button.html.twig', { product: product, in_wishlist: in_wishlist }) }}
+				</div>
+			</div>
+			
+		</div>
 
+		<div class="d-flex gap-2 mt-2">
 			{% if product.Stock is not null %}
 				{% if product.Stock > 0 %}
 					<span class="badge text-bg-success">Dostępny: {{ product.Stock }}</span>
@@ -30,21 +46,9 @@
 					<span class="badge text-bg-danger">Brak</span>
 				{% endif %}
 			{% endif %}
-		</div>
+			
 
-		<div class="d-flex gap-2 mt-2">
-			<button
-				type="button"
-				class="btn btn-sm btn-primary js-add-to-cart flex-grow-1"
-				data-url="{{ path('cart_add', { id: product.id }) }}"
-			>
-				Dodaj do koszyka
-			</button>
-
-			{% set in_wishlist = app.user and app.user.wishlist and app.user.wishlist.hasProduct(product) %}
-			<div class="js-wishlist-toggle-container">
-				{{ include('wishlist/_toggle_button.html.twig', { product: product, in_wishlist: in_wishlist }) }}
-			</div>
+			
 		</div>
 	</div>
 </div>
