@@ -43,17 +43,11 @@
 	<div class="d-flex align-items-center justify-content-center flex-grow-1" style="flex:2;">
 		<div class="d-flex align-items-center gap-0 row-bottom">
 			<a href="{{ path('wishlist_show') }}" class="nav-btn text-decoration-none text-dark d-inline-flex align-items-center" aria-label="Ulubione">
-				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.4l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"></path>
-				</svg>
+				<img src="{{ asset('images/heart.svg') }}" alt="Artex" height="25">
 			</a>
 
 			<a href="{{ path('cart_show') }}" class="nav-btn text-decoration-none text-dark d-inline-flex align-items-center" aria-label="Koszyk">
-				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<circle cx="9" cy="21" r="1"></circle>
-					<circle cx="20" cy="21" r="1"></circle>
-					<path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
-				</svg>
+				<img src="{{ asset('images/shop_cart.svg') }}" alt="Artex" height="25">
 			</a>
 
 			{% if app.user %}
