@@ -23,7 +23,7 @@
 		</div>
 
 		<div class="flex-grow-1">
-			<form method="get" class="mb-3 d-flex gap-2">
+			<form method="get" class="d-flex gap-2">
 				<input type="text" class="form-control border-0 shadow-none px-0 bg-transparent" placeholder="Szukaj" aria-label="Szukaj" name="q" value="{{ q|default('') }}">
 				<input type="hidden" name="asort" value="{{ asort|default(0) }}">
 				<input type="hidden" name="limit" value="{{ limit|default(24) }}">
