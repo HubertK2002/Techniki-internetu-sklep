@@ -67,7 +67,15 @@ final class WishlistController extends AbstractController
 		$em->flush();
 
 		if ($request->isXmlHttpRequest()) {
-			return new JsonResponse(['ok' => true, 'action' => 'add', 'productId' => $product->getId()]);
+			return new JsonResponse([
+				'ok' => true,
+				'action' => 'add',
+				'productId' => $product->getId(),
+				'toggleHtml' => $this->renderView('wishlist/_toggle_button.html.twig', [
+					'product' => $product,
+					'in_wishlist' => true,
+				]),
+			]);
 		}
 
 		return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('product_index'));
@@ -106,7 +114,15 @@ final class WishlistController extends AbstractController
 		$em->flush();
 
 		if ($request->isXmlHttpRequest()) {
-			return new JsonResponse(['ok' => true, 'action' => 'remove', 'productId' => $product->getId()]);
+			return new JsonResponse([
+				'ok' => true,
+				'action' => 'remove',
+				'productId' => $product->getId(),
+				'toggleHtml' => $this->renderView('wishlist/_toggle_button.html.twig', [
+					'product' => $product,
+					'in_wishlist' => false,
+				]),
+			]);
 		}
 
 		return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('wishlist_show'));

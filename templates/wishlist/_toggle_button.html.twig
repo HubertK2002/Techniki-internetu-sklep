@@ -1,0 +1,21 @@
+{% if app.user %}
+	<form
+		method="post"
+		action="{{ path(in_wishlist ? 'wishlist_remove' : 'wishlist_add', { id: product.id }) }}"
+		class="m-0 js-wishlist-form"
+		data-wishlist-action="{{ in_wishlist ? 'remove' : 'add' }}"
+		data-wishlist-role="toggle"
+		data-product-id="{{ product.id }}"
+	>
+		<input type="hidden" name="_token" value="{{ csrf_token((in_wishlist ? 'wishlist_remove_' : 'wishlist_add_') ~ product.id) }}">
+		<button type="submit" class="p-0 border-0 bg-transparent">
+			{% if in_wishlist %}
+				<img src="{{ asset('images/heart_full.svg') }}" alt="Artex" height="20">
+			{% else %}
+				<img src="{{ asset('images/heart.svg') }}" alt="Artex" height="20">
+			{% endif %}
+		</button>
+	</form>
+{% else %}
+	<a href="{{ path('app_login') }}" class="btn btn-sm btn-outline-secondary">Serce</a>
+{% endif %}

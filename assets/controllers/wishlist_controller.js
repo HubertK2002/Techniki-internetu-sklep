@@ -1,4 +1,4 @@
-﻿import { Controller } from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
 	connect() {
@@ -51,13 +51,14 @@ export default class extends Controller {
 			const action = form.dataset.wishlistAction;
 			const productId = form.dataset.productId;
 
-			if (action === 'add' && submitBtn) {
-				submitBtn.classList.remove('btn-outline-danger');
-				submitBtn.classList.add('btn-danger');
-				submitBtn.textContent = 'W wishliście';
+			if (form.dataset.wishlistRole === 'toggle') {
+				const container = form.closest('.js-wishlist-toggle-container');
+				if (container && data.toggleHtml) {
+					container.innerHTML = data.toggleHtml;
+				}
 			}
 
-			if (action === 'remove') {
+			if (action === 'remove' && form.dataset.wishlistRole !== 'toggle') {
 				const item = document.querySelector(`[data-wishlist-item="${productId}"]`);
 				if (item) {
 					item.remove();

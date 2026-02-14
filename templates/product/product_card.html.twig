@@ -41,21 +41,10 @@
 				Dodaj do koszyka
 			</button>
 
-			{% if app.user %}
-				{% set in_wishlist = app.user.wishlist and app.user.wishlist.hasProduct(product) %}
-				<form method="post" action="{{ path('wishlist_add', { id: product.id }) }}" class="m-0 js-wishlist-form" data-wishlist-action="add" data-product-id="{{ product.id }}">
-					<input type="hidden" name="_token" value="{{ csrf_token('wishlist_add_' ~ product.id) }}">
-					<button type="submit" class="p-0 border-0 bg-transparent">
-						{% if in_wishlist %}
-							<img src="{{ asset('images/heart_full.svg') }}" alt="Artex" height="20">
-						{% else %}
-							<img src="{{ asset('images/heart.svg') }}" alt="Artex" height="20">
-						{% endif %}
-					</button>
-				</form>
-			{% else %}
-				<a href="{{ path('app_login') }}" class="btn btn-sm btn-outline-secondary">Serce</a>
-			{% endif %}
+			{% set in_wishlist = app.user and app.user.wishlist and app.user.wishlist.hasProduct(product) %}
+			<div class="js-wishlist-toggle-container">
+				{{ include('wishlist/_toggle_button.html.twig', { product: product, in_wishlist: in_wishlist }) }}
+			</div>
 		</div>
 	</div>
 </div>
