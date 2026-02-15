@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +55,36 @@ final class ProductController extends AbstractController
 			'categories' => $categories,
 			'asort' => $asortId,
 			'q' => $q,
+		]);
+	}
+
+	#[Route('/products/{id}', name: 'product_show', requirements: ['id' => '\\d+'], methods: ['GET'])]
+	public function show(Product $product, ProductRepository $repo): Response
+	{
+		$categoryPath = [];
+		$category = $product->getCategory();
+		while ($category) {
+			array_unshift($categoryPath, $category);
+			$category = $category->getParent();
+		}
+
+		$relatedProducts = [];
+		if ($product->getCategory()) {
+			$relatedProducts = $repo->createQueryBuilder('p')
+				->andWhere('p.Category = :cat')
+				->andWhere('p.id != :id')
+				->setParameter('cat', $product->getCategory())
+				->setParameter('id', $product->getId())
+				->orderBy('p.id', 'DESC')
+				->setMaxResults(12)
+				->getQuery()
+				->getResult();
+		}
+
+		return $this->render('product/show.html.twig', [
+			'product' => $product,
+			'category_path' => $categoryPath,
+			'related_products' => $relatedProducts,
 		]);
 	}
 }

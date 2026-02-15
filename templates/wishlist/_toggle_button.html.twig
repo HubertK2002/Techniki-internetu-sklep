@@ -1,4 +1,5 @@
 {% if app.user %}
+	{% set heart_variant = heart_variant|default('default') %}
 	<form
 		method="post"
 		action="{{ path(in_wishlist ? 'wishlist_remove' : 'wishlist_add', { id: product.id }) }}"
@@ -8,7 +9,7 @@
 		data-product-id="{{ product.id }}"
 	>
 		<input type="hidden" name="_token" value="{{ csrf_token((in_wishlist ? 'wishlist_remove_' : 'wishlist_add_') ~ product.id) }}">
-		<button type="submit" class="p-0 border-0 bg-transparent">
+		<button type="submit" class="{{ heart_variant == 'product' ? 'wishlist-heart-btn-product' : 'p-0 border-0 bg-transparent' }}">
 			{% if in_wishlist %}
 				<img src="{{ asset('images/heart_full.svg') }}" alt="Artex" height="20">
 			{% else %}

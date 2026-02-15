@@ -1,0 +1,274 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.Name }}{% endblock %}
+
+{% block body %}
+<nav class="col-12 navbar navbar-expand-lg navbar-light bg-light p-0 mb-3">
+	{{ render(path('category_index')) }}
+</nav>
+
+<div class="container py-4 body-text">
+	{% if category_path is not empty %}
+		<div class="text-muted mb-3">
+			{% for cat in category_path %}
+				{{ cat.Name }}{% if not loop.last %} > {% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	<div class="row g-4 align-items-stretch">
+		<div class="col-12 col-lg-6">
+			{% if product.Image %}
+				<img src="{{ asset('products/' ~ product.Image) }}" alt="{{ product.Name }}" class="img-fluid rounded shadow-sm w-100">
+			{% else %}
+				<div class="bg-light rounded d-flex align-items-center justify-content-center" style="min-height: 320px;">
+					<span class="text-muted">Brak zdjecia</span>
+				</div>
+			{% endif %}
+		</div>
+
+		<div class="col-12 col-lg-6 d-flex flex-column">
+			<div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+				<h1 class="mb-0 h-title">{{ product.Name }}</h1>
+				{% set in_wishlist = app.user and app.user.wishlist and app.user.wishlist.hasProduct(product) %}
+				<div class="js-wishlist-toggle-container">
+					{{ include('wishlist/_toggle_button.html.twig', { product: product, in_wishlist: in_wishlist, heart_variant: 'product' }) }}
+				</div>
+			</div>
+			<div class="fs-5 fw-semibold mb-3">{{ product.Price|number_format(2, ',', ' ') }} zl</div>
+
+			<div class="mt-auto pt-3">
+				<form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="d-flex align-items-center gap-3" data-turbo="false">
+					<div class="d-inline-flex align-items-center gap-2">
+						<button type="button" class="qty-step-btn" data-qty-minus>-</button>
+						<div class="qty-ring">
+							<input
+								type="number"
+								name="qty"
+								value="1"
+								min="1"
+								step="1"
+								class="qty-input"
+								data-qty-input
+							>
+						</div>
+						<button type="button" class="qty-step-btn" data-qty-plus>+</button>
+					</div>
+
+					<button type="submit" class="btn product-add-btn">Dodaj do koszyka</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="mt-4">
+			<h2 class="h5 mb-2 h-title">Opis produktu</h2>
+		<div class="product-title-divider mb-3"></div>
+		<p class="mb-0">{{ product.Description ?: 'Brak opisu produktu.' }}</p>
+	</div>
+
+	{% if related_products is not empty %}
+		<div class="mt-5">
+			<h2 class="h4 mb-3 h-title">Podobne produkty</h2>
+			<div class="d-flex gap-3 overflow-auto pb-2">
+				{% for rel in related_products %}
+					<div class="flex-shrink-0" style="width: 280px;">
+						{{ include('product/product_card.html.twig', { product: rel }) }}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+</div>
+
+<script>
+document.addEventListener('click', (e) => {
+	const minus = e.target.closest('[data-qty-minus]');
+	const plus = e.target.closest('[data-qty-plus]');
+	if (!minus && !plus) return;
+
+	const form = (minus || plus).closest('form');
+	const input = form ? form.querySelector('[data-qty-input]') : null;
+	if (!input) return;
+
+	const current = parseInt(input.value || '1', 10);
+	const safeCurrent = Number.isNaN(current) ? 1 : current;
+
+	if (minus) input.value = String(Math.max(1, safeCurrent - 1));
+	if (plus) input.value = String(Math.max(1, safeCurrent + 1));
+});
+
+document.addEventListener('input', (e) => {
+	const input = e.target.closest('[data-qty-input]');
+	if (!input) return;
+	const value = parseInt(input.value || '1', 10);
+	if (Number.isNaN(value) || value < 1) {
+		input.value = '1';
+	}
+});
+</script>
+<style>
+.wishlist-heart-btn-product {
+	position: relative;
+	width: 38px;
+	height: 38px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: 999px;
+	background: #fff;
+	padding: 0;
+}
+
+.wishlist-heart-btn-product::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	padding: 2px;
+	border-radius: inherit;
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEEB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%,
+		#C89042 100%
+	);
+	background-size: 260% 260%;
+	background-position: 20% 50%;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+.wishlist-heart-btn-product img {
+	position: relative;
+	z-index: 1;
+	display: block;
+}
+
+.qty-step-btn {
+	border: 0;
+	background: transparent;
+	padding: 0 .4rem;
+	font-size: 1.5rem;
+	line-height: 1;
+}
+
+.qty-ring {
+	position: relative;
+	width: 48px;
+	height: 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	background: #fff;
+}
+
+.qty-ring::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	padding: 2px;
+	border-radius: inherit;
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEEB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%,
+		#C89042 100%
+	);
+	background-size: 260% 260%;
+	background-position: 20% 50%;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+.qty-input {
+	position: relative;
+	z-index: 1;
+	width: 34px;
+	border: 0;
+	background: transparent;
+	text-align: center;
+	font-weight: 600;
+}
+
+.qty-input:focus {
+	outline: none;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.qty-input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.product-add-btn {
+	background-color: var(--greenblue);
+	border-color: var(--greenblue);
+	color: #fff;
+}
+
+.product-add-btn:hover,
+.product-add-btn:focus-visible {
+	background-color: #1ea79c;
+	border-color: #1ea79c;
+	color: #fff;
+}
+
+.product-title-divider {
+	height: 2px;
+	width: 100%;
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEEB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%,
+		#C89042 100%
+	);
+	background-size: 260% 260%;
+	background-position: 20% 50%;
+	border-radius: 999px;
+}
+</style>
+{% endblock %}
