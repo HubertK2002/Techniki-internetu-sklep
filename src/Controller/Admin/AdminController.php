@@ -56,9 +56,9 @@ class AdminController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-		yield MenuItem::linkToCrud('Product', 'fa fa-product', Product::class);
-		yield MenuItem::linkToCrud('Category', 'fa fa-product', Category::class);
+        yield MenuItem::linkToDashboard('Strona główna', 'fa fa-home');
+		yield MenuItem::linkToCrud('Produkty', 'fa fa-product', Product::class);
+		yield MenuItem::linkToCrud('Kategorie', 'fa fa-product', Category::class);
 
 
 		$allOrders = $this->container->get(AdminUrlGenerator::class)
@@ -78,6 +78,6 @@ class AdminController extends AbstractDashboardController
 			->setController(\App\Controller\Admin\CodConfirmedOrderCrudController::class)
 			->setAction('index')
 			->generateUrl();
-		yield MenuItem::linkToUrl('Zamówienia COD (confirmed)', 'fa fa-truck', $urlCod);
+		yield MenuItem::linkToUrl('Zamówienia (płatność przy odbiorze)', 'fa fa-truck', $urlCod);
     }
 }
