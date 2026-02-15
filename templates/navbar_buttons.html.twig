@@ -51,10 +51,22 @@
 			</a>
 
 			{% if app.user %}
-				<span class="small text-muted">
-					{{ app.user.firstName|default('') }} {{ app.user.lastName|default('') }}
-				</span>
-				<a class="btn btn-outline-secondary btn-sm" href="{{ path('app_logout') }}">Wyloguj</a>
+				<div class="dropdown">
+					<button class="nav-btn btn btn-link text-dark p-0 d-inline-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Konto użytkownika">
+						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+							<circle cx="12" cy="7" r="4"></circle>
+						</svg>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li class="dropdown-item-text small text-muted">
+							{{ app.user.firstName|default('') }} {{ app.user.lastName|default('') }}
+						</li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="{{ path('order_index') }}">Zamówienia</a></li>
+						<li><a class="dropdown-item" href="{{ path('app_logout') }}">Wyloguj</a></li>
+					</ul>
+				</div>
 			{% else %}
 				<a href="{{ path('app_login') }}" class="nav-btn text-decoration-none text-dark d-inline-flex align-items-center gap-2">
 				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -64,10 +76,8 @@
 				<span>Zaloguj się</span>
 			</a>
 			{% endif %}
-			<a class="btn btn-outline-secondary btn-sm" href="{{ path('order_index') }}">Zamówienia</a>
 			
 		</div>
 	</div>
 
 </div>
-
