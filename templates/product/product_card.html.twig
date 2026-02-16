@@ -37,7 +37,7 @@
 					<img src="{{ asset('images/shop_cart.svg') }}" alt="Artex" height="20">
 				</button>
 				{% set in_wishlist = app.user and app.user.wishlist and app.user.wishlist.hasProduct(product) %}
-				<div class="js-wishlist-toggle-container">
+				<div class="js-wishlist-toggle-container d-inline-flex align-items-center justify-content-center" style="line-height: 0;">
 					{{ include('wishlist/_toggle_button.html.twig', { product: product, in_wishlist: in_wishlist }) }}
 				</div>
 			</div>

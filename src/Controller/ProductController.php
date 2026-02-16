@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\OpinionRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,7 +60,7 @@ final class ProductController extends AbstractController
 	}
 
 	#[Route('/products/{id}', name: 'product_show', requirements: ['id' => '\\d+'], methods: ['GET'])]
-	public function show(Product $product, ProductRepository $repo): Response
+	public function show(Product $product, ProductRepository $repo, OpinionRepository $opinionRepository): Response
 	{
 		$categoryPath = [];
 		$category = $product->getCategory();
@@ -81,10 +82,32 @@ final class ProductController extends AbstractController
 				->getResult();
 		}
 
+		$summary = $opinionRepository->getAverageAndCountForProduct($product);
+		$opinionsCount = $summary['count'];
+		$averageRating = $summary['average'];
+
+		$breakdown = $opinionRepository->getRatingBreakdownForProduct($product);
+		$ratingDistribution = [];
+		for ($stars = 5; $stars >= 1; $stars--) {
+			$count = $breakdown[$stars] ?? 0;
+			$percent = $opinionsCount > 0 ? (int) round(($count / $opinionsCount) * 100) : 0;
+			$ratingDistribution[] = [
+				'stars' => $stars,
+				'count' => $count,
+				'percent' => $percent,
+			];
+		}
+
+		$opinions = $opinionRepository->findLatestForProduct($product, 20);
+
 		return $this->render('product/show.html.twig', [
 			'product' => $product,
 			'category_path' => $categoryPath,
 			'related_products' => $relatedProducts,
+			'average_rating' => $averageRating,
+			'opinions_count' => $opinionsCount,
+			'rating_distribution' => $ratingDistribution,
+			'opinions' => $opinions,
 		]);
 	}
 }

@@ -69,7 +69,7 @@
 
 	{% if related_products is not empty %}
 		<div class="mt-5">
-			<h2 class="h4 mb-3 h-title">Podobne produkty</h2>
+			<h2 class="h4 mb-3 h-title">Zobacz także</h2>
 			<div class="d-flex gap-3 overflow-auto pb-2">
 				{% for rel in related_products %}
 					<div class="flex-shrink-0" style="width: 280px;">
@@ -79,6 +79,56 @@
 			</div>
 		</div>
 	{% endif %}
+
+	<div class="mt-5">
+		<h2 class="h4 mb-3 h-title">Opinie</h2>
+		<div class="row g-4">
+			<div class="col-12 col-lg-5">
+				<div class="border rounded p-3 h-100">
+					<div class="display-6 fw-semibold mb-2">{{ average_rating|number_format(1, ',', ' ') }}</div>
+					<div class="mb-2">
+						{% set rounded_avg = average_rating|round(0, 'common') %}
+						{% for i in 1..5 %}
+							<span class="{{ i <= rounded_avg ? 'review-star-gold' : 'review-star-muted' }}">★</span>
+						{% endfor %}
+					</div>
+					<div class="text-muted">{{ opinions_count }} opinii</div>
+				</div>
+			</div>
+			<div class="col-12 col-lg-7">
+				<div class="border rounded p-3 h-100 d-flex flex-column gap-2">
+					{% for row in rating_distribution %}
+						<div class="d-flex align-items-center gap-2">
+							<div style="width: 24px;">{{ row.stars }}</div>
+							<div class="review-star-muted">★</div>
+							<div class="progress flex-grow-1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ row.percent }}" style="height: 8px;">
+								<div class="progress-bar review-progress-gold" style="width: {{ row.percent }}%;"></div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-4 d-flex flex-column gap-3">
+			{% if opinions is empty %}
+				<div class="text-muted">Brak opinii dla tego produktu.</div>
+			{% else %}
+				{% for opinion in opinions %}
+					<div class="border rounded p-3">
+						<div class="fw-semibold mb-2">{{ opinion.User.firstName|default('Użytkownik') }}</div>
+						<div class="mb-2">
+							{% for i in 1..5 %}
+								<span class="{{ i <= opinion.Rating ? 'review-star-gold' : 'review-star-muted' }}">★</span>
+							{% endfor %}
+						</div>
+						<div class="text-muted small mb-2">Data opinii: {{ opinion.CreatedAt|date('d.m.Y') }}</div>
+						<div>{{ opinion.Comment ?: 'Brak komentarza.' }}</div>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	</div>
 </div>
 
 <script>
@@ -269,6 +319,42 @@ document.addEventListener('input', (e) => {
 	background-size: 260% 260%;
 	background-position: 20% 50%;
 	border-radius: 999px;
+}
+
+.review-star-gold {
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEEB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%,
+		#C89042 100%
+	);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.review-star-muted {
+	color: #adb5bd;
+}
+
+.review-progress-gold {
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#C28D43 40%,
+		#FFF2C5 60%,
+		#C89042 100%
+	);
 }
 </style>
 {% endblock %}

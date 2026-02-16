@@ -1,5 +1,6 @@
 {% if app.user %}
 	{% set heart_variant = heart_variant|default('default') %}
+	{% set default_heart_class = 'p-0 border-0 bg-transparent d-inline-flex align-items-center justify-content-center' %}
 	<form
 		method="post"
 		action="{{ path(in_wishlist ? 'wishlist_remove' : 'wishlist_add', { id: product.id }) }}"
@@ -9,7 +10,7 @@
 		data-product-id="{{ product.id }}"
 	>
 		<input type="hidden" name="_token" value="{{ csrf_token((in_wishlist ? 'wishlist_remove_' : 'wishlist_add_') ~ product.id) }}">
-		<button type="submit" class="{{ heart_variant == 'product' ? 'wishlist-heart-btn-product' : 'p-0 border-0 bg-transparent' }}">
+		<button type="submit" class="{{ heart_variant == 'product' ? 'wishlist-heart-btn-product' : default_heart_class }}" {% if heart_variant != 'product' %}style="line-height: 0;"{% endif %}>
 			{% if in_wishlist %}
 				<img src="{{ asset('images/heart_full.svg') }}" alt="Artex" height="20">
 			{% else %}
@@ -18,5 +19,7 @@
 		</button>
 	</form>
 {% else %}
-	<a href="{{ path('app_login') }}" class="btn btn-sm btn-outline-secondary">Serce</a>
+	<a href="{{ path('app_login') }}" class="p-0 border-0 bg-transparent d-inline-flex align-items-center justify-content-center" style="line-height: 0;" aria-label="Dodaj do ulubionych">
+		<img src="{{ asset('images/heart.svg') }}" alt="Artex" height="20">
+	</a>
 {% endif %}

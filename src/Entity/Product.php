@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,15 @@ class Product
 
     #[ORM\ManyToOne]
     private ?Category $Category = null;
+
+	/** @var Collection<int, Opinion> */
+	#[ORM\OneToMany(mappedBy: 'Product', targetEntity: Opinion::class, orphanRemoval: true)]
+	private Collection $Opinions;
+
+	public function __construct()
+	{
+		$this->Opinions = new ArrayCollection();
+	}
 
     public function getId(): ?int
     {
@@ -108,4 +119,31 @@ class Product
 
         return $this;
     }
+
+	/** @return Collection<int, Opinion> */
+	public function getOpinions(): Collection
+	{
+		return $this->Opinions;
+	}
+
+	public function addOpinion(Opinion $Opinion): static
+	{
+		if (!$this->Opinions->contains($Opinion)) {
+			$this->Opinions->add($Opinion);
+			$Opinion->setProduct($this);
+		}
+
+		return $this;
+	}
+
+	public function removeOpinion(Opinion $Opinion): static
+	{
+		if ($this->Opinions->removeElement($Opinion)) {
+			if ($Opinion->getProduct() === $this) {
+				$Opinion->setProduct(null);
+			}
+		}
+
+		return $this;
+	}
 }
