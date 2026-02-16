@@ -3,6 +3,10 @@
 {% block title %}Lista życzeń{% endblock %}
 
 {% block body %}
+<nav class="col-12 navbar navbar-expand-lg navbar-light bg-light p-0">
+	{{ render(path('category_index')) }}
+</nav>
+
 <div class="container py-4">
 	<h1 class="mb-4">Lista życzeń</h1>
 

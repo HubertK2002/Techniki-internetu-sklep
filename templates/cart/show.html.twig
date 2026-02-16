@@ -7,6 +7,10 @@
 {% endblock %}
 
 {% block body %}
+<nav class="col-12 navbar navbar-expand-lg navbar-light bg-light p-0">
+	{{ render(path('category_index')) }}
+</nav>
+
 {% for lines in app.flashes('stock_errors') %}
 	<div class="alert alert-danger">
 		<div class="fw-semibold mb-2">Brak na stanie:</div>
