@@ -9,11 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use App\Controller\Admin\ProductCrudController;
-use App\Entity\Product;
 use App\Entity\Category;
-use App\Controller\Admin\OrderCrudController;
-use App\Controller\Admin\AllOrdersCrudController;
 
 class AdminController extends AbstractDashboardController
 {
@@ -57,7 +53,18 @@ class AdminController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Strona główna', 'fa fa-home');
-		yield MenuItem::linkToCrud('Produkty', 'fa fa-product', Product::class);
+		$urlProducts = $this->container->get(AdminUrlGenerator::class)
+			->setController(\App\Controller\Admin\ProductCrudController::class)
+			->setAction('index')
+			->generateUrl();
+		yield MenuItem::linkToUrl('Produkty', 'fa fa-product', $urlProducts);
+
+		$urlPromotions = $this->container->get(AdminUrlGenerator::class)
+			->setController(\App\Controller\Admin\PromotionCrudController::class)
+			->setAction('index')
+			->generateUrl();
+		yield MenuItem::linkToUrl('Promocje', 'fa fa-tags', $urlPromotions);
+
 		yield MenuItem::linkToCrud('Kategorie', 'fa fa-product', Category::class);
 
 
