@@ -1,0 +1,5 @@
+form.registration.errors.agree_terms: "Musisz zaakceptować regulamin."
+form.registration.errors.password_blank: "Wpisz hasło."
+form.registration.errors.password_min: "Hasło musi mieć co najmniej {{ limit }} znaków."
+form.registration.errors.password_confirm_blank: "Powtórz hasło."
+form.registration.errors.password_confirm_mismatch: "Hasła muszą być takie same."

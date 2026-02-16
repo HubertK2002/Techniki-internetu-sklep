@@ -1,7 +1,7 @@
-{% set hasError = registrationForm.agreeTerms.vars.errors|length > 0 %}
+{% set hasError = field.vars.errors|length > 0 %}
 
 <div class="form-check mb-3">
-	{{ form_widget(registrationForm.agreeTerms, {
+	{{ form_widget(field, {
 		attr: {
 			id: 'rememberMe',
 			style: 'margin-right:5px; margin-left:-5px;',
@@ -9,7 +9,7 @@
 		}
 	}) }}
 
-	{{ form_label(registrationForm.agreeTerms, 'Zaakceptuj warunki', {
+	{{ form_label(field, 'Zaakceptuj warunki', {
 		label_attr: {
 			class: 'form-check-label',
 			for: 'rememberMe'
@@ -18,7 +18,7 @@
 
 	{% if hasError %}
 		<div class="invalid-feedback d-block">
-			{{ form_errors(registrationForm.agreeTerms) }}
+			{{ form_errors(field) }}
 		</div>
 	{% endif %}
 </div>

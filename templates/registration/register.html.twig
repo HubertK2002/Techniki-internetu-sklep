@@ -30,6 +30,11 @@
 							{% endfor %}
 
 							{{ form_start(registrationForm, { attr: { novalidate: 'novalidate' } }) }}
+								{% if registrationForm.vars.errors|length > 0 %}
+									<div class="alert alert-danger" role="alert">
+										{{ form_errors(registrationForm) }}
+									</div>
+								{% endif %}
 								<div class="row">
 									<div class="col-6">
 										{{ include('form/field.html.twig', { field: registrationForm.firstName }) }}
@@ -43,6 +48,7 @@
 								{{ include('form/field.html.twig', { field: registrationForm.plainPassword }) }}
 								{{ include('form/field.html.twig', { field: registrationForm.confirmPassword }) }}
 								{{ include('form/checkbox.html.twig', { field: registrationForm.agreeTerms }) }}
+								{{ form_widget(registrationForm._token) }}
 
 								<button type="submit" class="btn btn-primary w-100 border-0" style="background-color: #23BDB0;">
 									Załóż konto

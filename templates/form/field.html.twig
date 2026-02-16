@@ -41,5 +41,10 @@
 				{% endif %}
 			{% endfor %}
 		/>
+		{% if hasError %}
+			<div class="invalid-feedback d-block">
+				{{ form_errors(field) }}
+			</div>
+		{% endif %}
 	</div>
 </div>
