@@ -50,7 +50,7 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('noreply@artex-moryn.com', 'Artex'))
                     ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Potwierdź adres email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
@@ -113,7 +113,7 @@ class RegistrationController extends AbstractController
 				$email = (new TemplatedEmail())
 					->from(new Address('noreply@artex-moryn.com', 'Artex'))
 					->to($user->getEmail())
-					->subject('Please Confirm your Email')
+					->subject('Potwierdź adres email')
 					->htmlTemplate('registration/confirmation_email.html.twig');
 
 				$emailVerifier->sendEmailConfirmation('app_verify_email', $user, $email);
