@@ -45,9 +45,9 @@
 					<div class="cart-list">
 						{% for item in cart.Items %}
 							{% set p = item.Product %}
-							{% set line = (p.Price ?? 0) * item.Quantity %}
+							{% set line = (p ? p.EffectivePrice : 0) * item.Quantity %}
 							{% set total = total + line %}
-							<div class="cart-item py-3" data-cart-item data-unit-price="{{ (p.Price ?? 0)|number_format(2, '.', '') }}">
+							<div class="cart-item py-3" data-cart-item data-unit-price="{{ (p ? p.EffectivePrice : 0)|number_format(2, '.', '') }}">
 								<div class="cart-item-content d-flex gap-3">
 									<div class="d-flex align-items-center gap-3">
 										<label class="cart-select-label m-0">
@@ -90,7 +90,12 @@
 											<div class="d-flex align-items-end gap-4">
 												<div class="text-end">
 													<div class="text-muted small">Cena</div>
-													<div class="fw-semibold">{{ p.Price|number_format(2, ',', ' ') }} zł</div>
+													{% if p and p.hasPromotion %}
+														<div class="small text-muted text-decoration-line-through">{{ p.Price|number_format(2, ',', ' ') }} zł</div>
+														<div class="fw-semibold text-danger">{{ p.EffectivePrice|number_format(2, ',', ' ') }} zł</div>
+													{% else %}
+														<div class="fw-semibold">{{ p.Price|number_format(2, ',', ' ') }} zł</div>
+													{% endif %}
 												</div>
 												<form
 													method="post"

@@ -19,6 +19,12 @@ class Product
     #[ORM\Column]
     private ?float $Price = null;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $PromotionEnabled = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $PromotionPercent = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Image = null;
 
@@ -59,6 +65,53 @@ class Product
 
         return $this;
     }
+
+	public function isPromotionEnabled(): bool
+	{
+		return $this->PromotionEnabled;
+	}
+
+	public function setPromotionEnabled(bool $PromotionEnabled): static
+	{
+		$this->PromotionEnabled = $PromotionEnabled;
+
+		return $this;
+	}
+
+	public function getPromotionPercent(): ?int
+	{
+		return $this->PromotionPercent;
+	}
+
+	public function setPromotionPercent(?int $PromotionPercent): static
+	{
+		if ($PromotionPercent === null) {
+			$this->PromotionPercent = null;
+			return $this;
+		}
+
+		$this->PromotionPercent = max(0, min(99, $PromotionPercent));
+		return $this;
+	}
+
+	public function hasPromotion(): bool
+	{
+		return $this->PromotionEnabled
+			&& $this->PromotionPercent !== null
+			&& $this->PromotionPercent > 0;
+	}
+
+	public function getEffectivePrice(): float
+	{
+		$basePrice = (float) ($this->Price ?? 0);
+
+		if (!$this->hasPromotion()) {
+			return $basePrice;
+		}
+
+		$discounted = $basePrice * (100 - (int) $this->PromotionPercent) / 100;
+		return round($discounted, 2);
+	}
 
     public function getImage(): ?string
     {

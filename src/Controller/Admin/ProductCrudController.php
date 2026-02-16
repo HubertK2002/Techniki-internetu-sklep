@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -23,6 +24,8 @@ class ProductCrudController extends AbstractCrudController
 	{
 		yield TextField::new('Name', 'Nazwa');
 		yield MoneyField::new('Price', 'Cena')->setCurrency('PLN');
+		yield BooleanField::new('PromotionEnabled', 'Promocja aktywna');
+		yield IntegerField::new('PromotionPercent', 'Rabat (%)')->setHelp('Wpisz wartość 1-99');
 		yield IntegerField::new('Stock', 'Stan');
 		yield TextEditorField::new('Description', 'Opis')->hideOnIndex();
 		yield AssociationField::new('Category', 'Kategoria');

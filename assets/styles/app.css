@@ -116,12 +116,17 @@ input[type="checkbox"]:checked::after {
 	padding: 0 2.75rem;
 }
 
-.bestsellers-track {
+.horizontal-scroll-viewport {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding-top: .7rem;
+	margin-top: -.7rem;
+	padding-right: 1rem;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 }
 
-.bestsellers-track::-webkit-scrollbar {
+.horizontal-scroll-viewport::-webkit-scrollbar {
 	display: none;
 }
 
@@ -180,4 +185,24 @@ input[type="checkbox"]:checked::after {
 
 .scroll-arrow-btn-right {
 	right: 0;
+}
+
+.product-card,
+.product-card-media {
+	overflow: visible;
+}
+
+.product-promo-badge {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 3;
+	background: var(--greenblue);
+	color: #fff;
+	font-weight: 700;
+	font-size: .82rem;
+	line-height: 1;
+	padding: .4rem 1rem .4rem .65rem;
+	transform: translate(14%, -34%);
+	clip-path: polygon(0 0, 100% 0, 82% 50%, 100% 100%, 0 100%);
 }

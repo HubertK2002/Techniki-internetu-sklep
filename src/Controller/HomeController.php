@@ -13,10 +13,12 @@ final class HomeController extends AbstractController
     public function index(ProductRepository $productRepository): Response
     {
 		$bestsellers = $productRepository->findBestsellers(12);
+		$promotions = $productRepository->findPromotions(12);
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
 			'bestsellers' => $bestsellers,
+			'promotions' => $promotions,
         ]);
     }
 }

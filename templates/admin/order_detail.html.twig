@@ -40,7 +40,7 @@
 				{% set total = 0 %}
 				{% for item in cart.Items %}
 					{% set p = item.Product %}
-					{% set unit = p ? p.Price : 0 %}
+					{% set unit = p ? p.EffectivePrice : 0 %}
 					{% set line = unit * item.Quantity %}
 					{% set total = total + line %}
 

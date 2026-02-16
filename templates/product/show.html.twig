@@ -35,7 +35,14 @@
 					{{ include('wishlist/_toggle_button.html.twig', { product: product, in_wishlist: in_wishlist, heart_variant: 'product' }) }}
 				</div>
 			</div>
-			<div class="fs-5 fw-semibold mb-3">{{ product.Price|number_format(2, ',', ' ') }} zl</div>
+			<div class="fs-5 fw-semibold mb-3">
+				{% if product.hasPromotion %}
+					<div class="small text-muted text-decoration-line-through">{{ product.Price|number_format(2, ',', ' ') }} zl</div>
+					<div class="text-danger">{{ product.EffectivePrice|number_format(2, ',', ' ') }} zl</div>
+				{% else %}
+					{{ product.Price|number_format(2, ',', ' ') }} zl
+				{% endif %}
+			</div>
 
 			<div class="mt-auto pt-3">
 				<form method="post" action="{{ path('cart_add', { id: product.id }) }}" class="d-flex align-items-center gap-3" data-turbo="false">
@@ -77,12 +84,14 @@
 					</svg>
 				</button>
 
-				<div class="d-flex gap-3 overflow-auto pb-2 bestsellers-track" data-horizontal-scroll-target="track">
-					{% for rel in related_products %}
-						<div class="flex-shrink-0" style="width: 280px;">
-							{{ include('product/product_card.html.twig', { product: rel }) }}
-						</div>
-					{% endfor %}
+				<div class="horizontal-scroll-viewport" data-horizontal-scroll-target="track">
+					<div class="d-flex gap-3 pb-2 bestsellers-track">
+						{% for rel in related_products %}
+							<div class="flex-shrink-0" style="width: 280px;">
+								{{ include('product/product_card.html.twig', { product: rel }) }}
+							</div>
+						{% endfor %}
+					</div>
 				</div>
 
 				<button type="button" class="scroll-arrow-btn scroll-arrow-btn-right" data-action="click->horizontal-scroll#next" aria-label="Następne produkty">

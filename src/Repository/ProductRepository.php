@@ -36,6 +36,23 @@ class ProductRepository extends ServiceEntityRepository
 			->getResult();
 	}
 
+	/**
+	 * @return Product[]
+	 */
+	public function findPromotions(int $limit = 12): array
+	{
+		return $this->createQueryBuilder('p')
+			->andWhere('p.PromotionEnabled = :enabled')
+			->andWhere('p.PromotionPercent IS NOT NULL')
+			->andWhere('p.PromotionPercent > 0')
+			->setParameter('enabled', true)
+			->orderBy('p.PromotionPercent', 'DESC')
+			->addOrderBy('p.id', 'DESC')
+			->setMaxResults($limit)
+			->getQuery()
+			->getResult();
+	}
+
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

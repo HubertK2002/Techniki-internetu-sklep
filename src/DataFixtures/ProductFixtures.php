@@ -23,6 +23,14 @@ final class ProductFixtures extends Fixture implements DependentFixtureInterface
 			$product->setStock($faker->numberBetween(0, 200));
 			$product->setDescription($faker->paragraphs(mt_rand(1, 3), true));
 
+			if ($faker->boolean(22)) {
+				$product->setPromotionEnabled(true);
+				$product->setPromotionPercent($faker->numberBetween(5, 45));
+			} else {
+				$product->setPromotionEnabled(false);
+				$product->setPromotionPercent(null);
+			}
+
 			$categories = $manager->getRepository(Category::class)->findAll();
 			if (!$categories) {
 				throw new \RuntimeException('Brak kategorii w bazie.');

@@ -1,15 +1,21 @@
 {# templates/product/product_card.html.twig #}
 
-<div class="card h-100 shadow-sm">
-	{% if product.Image %}
-		<a href="{{ path('product_show', { id: product.id }) }}" class="d-block text-decoration-none text-dark">
-			<img src="{{ asset('products/' ~ product.Image) }}" alt="{{ product.Name }}" class="card-img-top">
-		</a>
-	{% else %}
-		<div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 180px;">
-			<span class="text-muted">Brak zdjęcia</span>
-		</div>
-	{% endif %}
+<div class="card product-card h-100 shadow-sm position-relative">
+	<div class="product-card-media position-relative">
+		{% if product.hasPromotion %}
+			<div class="product-promo-badge">-{{ product.PromotionPercent }}%</div>
+		{% endif %}
+
+		{% if product.Image %}
+			<a href="{{ path('product_show', { id: product.id }) }}" class="d-block text-decoration-none text-dark">
+				<img src="{{ asset('products/' ~ product.Image) }}" alt="{{ product.Name }}" class="card-img-top">
+			</a>
+		{% else %}
+			<div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 180px;">
+				<span class="text-muted">Brak zdjęcia</span>
+			</div>
+		{% endif %}
+	</div>
 
 	<div class="card-body d-flex flex-column">
 		<h5 class="card-title mb-2">
@@ -25,8 +31,13 @@
 		{% endif %}
 
 		<div class="mt-auto d-flex justify-content-between align-items-center">
-			<div class="fw-semibold">
-				{{ product.Price|number_format(2, ',', ' ') }} zł
+			<div>
+				{% if product.hasPromotion %}
+					<div class="small text-muted text-decoration-line-through">{{ product.Price|number_format(2, ',', ' ') }} zł</div>
+					<div class="fw-semibold text-danger">{{ product.EffectivePrice|number_format(2, ',', ' ') }} zł</div>
+				{% else %}
+					<div class="fw-semibold">{{ product.Price|number_format(2, ',', ' ') }} zł</div>
+				{% endif %}
 			</div>
 			<div class="d-flex column gap-3">
 				<button

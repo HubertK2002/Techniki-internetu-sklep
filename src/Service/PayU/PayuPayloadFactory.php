@@ -25,7 +25,7 @@ final class PayuPayloadFactory
 		$cart = $order->getCart();
 		foreach ($cart->getItems() as $item) {
 			$p = $item->getProduct();
-			$unit = (float) ($p?->getPrice() ?? 0);
+			$unit = (float) ($p?->getEffectivePrice() ?? 0);
 			$qty = (int) $item->getQuantity();
 
 			$products[] = [
