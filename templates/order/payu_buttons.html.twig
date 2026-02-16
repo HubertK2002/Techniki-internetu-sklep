@@ -47,7 +47,7 @@
 
 				{% if order.PayuStatus %}
 					<div class="small text-muted mt-2">
-						Ostatni status PayU: <strong>{{ order.PayuStatus }}</strong>
+						Ostatni status PayU: <strong>{{ order_payu_status_label(order.PayuStatus) }}</strong>
 					</div>
 				{% endif %}
 			{% endif %}

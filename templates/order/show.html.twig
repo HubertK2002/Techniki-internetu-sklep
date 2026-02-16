@@ -7,7 +7,7 @@
 	<h1 class="mb-3">Zamówienie #{{ order.id }}</h1>
 
 	<div class="mb-3 text-muted">
-		Status: <strong>{{ order.Status }}</strong>
+		Status: <strong>{{ order_status_label(order.Status) }}</strong>
 	</div>
 
 	{% set cart = order.Cart %}

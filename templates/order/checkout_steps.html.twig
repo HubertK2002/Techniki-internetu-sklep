@@ -15,7 +15,7 @@
 		<div class="card-body">
 			<h5 class="mb-3">1) Metoda dostawy</h5>
 			{% if order.DeliveryMethod %}
-				<div class="mb-2">Wybrano: <strong>{{ order.DeliveryMethod }}</strong></div>
+				<div class="mb-2">Wybrano: <strong>{{ order_delivery_method_label(order.DeliveryMethod) }}</strong></div>
 			{% endif %}
 			<form method="post" action="{{ locked ? '' : path('order_set_delivery', { id: order.id }) }}" class="d-flex gap-2 flex-wrap">
 				<button
@@ -148,5 +148,4 @@
 		</div>
 	</div>
 </div>
-
 

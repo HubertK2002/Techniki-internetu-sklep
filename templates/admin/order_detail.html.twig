@@ -10,7 +10,7 @@
 		<h2 class="h5 mb-3">PayU</h2>
 
 		<ul class="list-unstyled mb-0">
-			<li><strong>Status PayU:</strong> {{ o.PayuStatus ?? '—' }}</li>
+			<li><strong>Status PayU:</strong> {{ o.PayuStatus ? order_payu_status_label(o.PayuStatus) : '—' }}</li>
 			<li><strong>Opłacone:</strong>
 				{% if o.PaidAt %}
 					{{ o.PaidAt|date('Y-m-d H:i') }}
@@ -64,3 +64,4 @@
 		<div class="alert alert-secondary mb-0">Brak pozycji w koszyku.</div>
 	{% endif %}
 {% endblock %}
+

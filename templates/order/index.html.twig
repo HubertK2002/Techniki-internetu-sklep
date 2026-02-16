@@ -24,9 +24,9 @@
 				{% for o in orders %}
 					<tr>
 						<td>#{{ o.id }}</td>
-						<td>{{ o.Status }}</td>
-						<td>{{ o.DeliveryMethod }}</td>
-						<td>{{ o.PaymentMethod }}</td>
+						<td>{{ order_status_label(o.Status) }}</td>
+						<td>{{ order_delivery_method_label(o.DeliveryMethod) }}</td>
+						<td>{{ order_payment_method_label(o.PaymentMethod) }}</td>
 						<td>{{ o.CreatedAt ? o.CreatedAt|date('Y-m-d H:i') : '' }}</td>
 						<td class="text-end">
 							<a class="btn btn-sm btn-outline-primary" href="{{ path('order_show', { id: o.id }) }}">
