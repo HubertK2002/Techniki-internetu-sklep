@@ -43,10 +43,21 @@ final class OrderController extends AbstractController
 
 	#[IsGranted('ROLE_USER')]
     #[Route('/order/create', name: 'order_create_from_cart', methods: ['POST'])]
-	public function createFromCart(CartService $cartService): Response
+	public function createFromCart(Request $request, CartService $cartService): Response
 	{
 		try {
-			$order = $cartService->checkout();
+			$useSelectedOnly = (bool) $request->request->get('use_selected_only', false);
+			$selectedProductIds = array_map(
+				static fn ($id) => (int) $id,
+				(array) $request->request->all('selected_product_ids')
+			);
+			$selectedProductIds = array_values(array_unique(array_filter($selectedProductIds, static fn (int $id) => $id > 0)));
+
+			if ($useSelectedOnly && $selectedProductIds === []) {
+				throw new \RuntimeException('Wybierz przynajmniej jeden produkt do zamówienia.');
+			}
+
+			$order = $cartService->checkout($selectedProductIds);
 			return $this->redirectToRoute('order_show', ['id' => $order->getId()]);
 		}  catch (InsufficientStockException $e) {
 			$this->addFlash('stock_errors', $e->getLines());

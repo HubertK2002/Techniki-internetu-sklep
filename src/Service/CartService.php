@@ -285,7 +285,10 @@ final class CartService
 		]);
 	}
 
-	public function checkout(): Order
+	/**
+	 * @param int[] $selectedProductIds
+	 */
+	public function checkout(array $selectedProductIds = []): Order
 	{
 		$user = $this->getUser();
 		if (!$user) {
@@ -297,6 +300,33 @@ final class CartService
 			throw new \RuntimeException('Koszyk jest pusty.');
 		}
 
+		$selectedLookup = [];
+		foreach ($selectedProductIds as $id) {
+			$id = (int) $id;
+			if ($id > 0) {
+				$selectedLookup[$id] = true;
+			}
+		}
+
+		$itemsToCheckout = [];
+		foreach ($cart->getItems() as $item) {
+			$product = $item->getProduct();
+			$productId = $product?->getId();
+			if (!$productId) {
+				continue;
+			}
+
+			if ($selectedLookup !== [] && !isset($selectedLookup[$productId])) {
+				continue;
+			}
+
+			$itemsToCheckout[] = $item;
+		}
+
+		if ($itemsToCheckout === []) {
+			throw new \RuntimeException('Wybierz przynajmniej jeden produkt do zamówienia.');
+		}
+
 		$em = $this->em;
 		$conn = $em->getConnection();
 
@@ -305,7 +335,7 @@ final class CartService
 		try {
 			// 1) Sprawdź + zarezerwuj stock atomowo
 			$errors = [];
-			foreach ($cart->getItems() as $item) {
+			foreach ($itemsToCheckout as $item) {
 				$product = $item->getProduct();	
 				$qty = (int)$item->getQuantity();
 				$stock = $product?->getStock();
@@ -336,25 +366,43 @@ final class CartService
 				throw new InsufficientStockException($errors);
 			}
 
-			// 2) Utwórz Order powiązany z tym koszykiem
+			// 2) Snapshot zamawianych pozycji do nowego koszyka orderowego
+			$orderCart = new \App\Entity\Cart();
+			$orderCart->setUser($user);
+			$orderCart->setStatus('ordered');
+			$orderCart->setSessionToken(null);
+			$em->persist($orderCart);
+
+			foreach ($itemsToCheckout as $item) {
+				$product = $item->getProduct();
+				if (!$product) {
+					continue;
+				}
+
+				$orderItem = new \App\Entity\CartItem();
+				$orderItem->setCart($orderCart);
+				$orderItem->setProduct($product);
+				$orderItem->setQuantity($item->getQuantity());
+
+				$em->persist($orderItem);
+				$orderCart->addItem($orderItem);
+			}
+
+			// 3) Utwórz Order powiązany z tym snapshotem
 			$order = new \App\Entity\Order();
 			$order->setUser($user);
-			$order->setCart($cart);
+			$order->setCart($orderCart);
 			$order->setStatus('new');
 
 			$em->persist($order);
 
-			// 3) Zamroź koszyk jako snapshot
-			$cart->setStatus('ordered');
-			$cart->setSessionToken(null);
+			// 4) Usuń z aktywnego koszyka tylko zamawiane pozycje
+			foreach ($itemsToCheckout as $item) {
+				$cart->removeItem($item);
+				$em->remove($item);
+			}
+			$cart->touch();
 
-			$em->flush();
-
-			// 4) Utwórz nowy aktywny koszyk dla usera
-			$newCart = new \App\Entity\Cart();
-			$newCart->setUser($user);
-			$newCart->setStatus('active');
-			$em->persist($newCart);
 			$em->flush();
 
 			$conn->commit();
