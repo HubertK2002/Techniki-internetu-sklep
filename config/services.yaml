@@ -18,6 +18,8 @@ services:
     App\:
         resource: '../src/'
     App\Messenger\LogEmailMiddleware:
+      arguments:
+        $logger: '@monolog.logger.messenger'
       tags:
         - { name: messenger.middleware, priority: 1000 }
 
