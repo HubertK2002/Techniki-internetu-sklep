@@ -29,9 +29,11 @@
 				<input type="hidden" name="limit" value="{{ limit|default(24) }}">
 
 				{% if q is defined and q %}
-					<a class="btn btn-outline-secondary"
+					<a class="btn btn-link text-muted p-0 px-1 lh-1 text-decoration-none align-self-end mb-1"
+					   aria-label="Wyczysc wyszukiwanie"
+					   title="Wyczysc"
 					   href="{{ path(route_name, { asort: asort|default(0), limit: limit|default(24) }) }}">
-						Wyczyść
+						&times;
 					</a>
 				{% endif %}
 			</form>
