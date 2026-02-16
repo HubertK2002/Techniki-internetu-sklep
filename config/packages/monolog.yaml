@@ -32,6 +32,11 @@ when@test:
 when@prod:
     monolog:
         handlers:
+            messenger:
+                type: stream
+                path: php://stderr
+                level: info
+                channels: ["messenger"]
             main:
                 type: fingers_crossed
                 action_level: error
