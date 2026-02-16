@@ -5,4 +5,31 @@
 		{{ render(path('category_index')) }}
 	</nav>
 	{% include 'home/gallery.html.twig' %}
+
+	{% if bestsellers is not empty %}
+		<div class="container py-4 body-text">
+			<h2 class="h4 mb-3 h-title">Bestsellery</h2>
+			<div class="bestsellers-slider" data-controller="horizontal-scroll">
+				<button type="button" class="scroll-arrow-btn scroll-arrow-btn-left" data-action="click->horizontal-scroll#prev" aria-label="Poprzednie bestsellery">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="15 18 9 12 15 6"></polyline>
+					</svg>
+				</button>
+
+				<div class="d-flex gap-3 overflow-auto pb-2 bestsellers-track" data-horizontal-scroll-target="track">
+					{% for product in bestsellers %}
+						<div class="flex-shrink-0" style="width: 280px;">
+							{{ include('product/product_card.html.twig', { product: product }) }}
+						</div>
+					{% endfor %}
+				</div>
+
+				<button type="button" class="scroll-arrow-btn scroll-arrow-btn-right" data-action="click->horizontal-scroll#next" aria-label="Następne bestsellery">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="9 18 15 12 9 6"></polyline>
+					</svg>
+				</button>
+			</div>
+		</div>
+	{% endif %}
 {% endblock %}

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\CartItem;
+use App\Entity\Order;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,6 +17,24 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+
+	/**
+	 * @return Product[]
+	 */
+	public function findBestsellers(int $limit = 12): array
+	{
+		return $this->createQueryBuilder('p')
+			->innerJoin(CartItem::class, 'ci', 'WITH', 'ci.Product = p')
+			->innerJoin(Order::class, 'o', 'WITH', 'o.Cart = ci.Cart')
+			->andWhere('o.Status IN (:statuses)')
+			->setParameter('statuses', ['confirmed', 'paid'])
+			->groupBy('p.id')
+			->orderBy('SUM(ci.Quantity)', 'DESC')
+			->addOrderBy('p.id', 'DESC')
+			->setMaxResults($limit)
+			->getQuery()
+			->getResult();
+	}
 
     //    /**
     //     * @return Product[] Returns an array of Product objects

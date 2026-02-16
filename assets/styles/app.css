@@ -110,3 +110,74 @@ input[type="checkbox"]:checked::after {
 	opacity: 1;
 }
 
+.bestsellers-slider,
+.horizontal-scroll-slider {
+	position: relative;
+	padding: 0 2.75rem;
+}
+
+.bestsellers-track {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.bestsellers-track::-webkit-scrollbar {
+	display: none;
+}
+
+.scroll-arrow-btn {
+	position: absolute;
+	top: 45%;
+	transform: translateY(-50%);
+	width: 38px;
+	height: 38px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: 999px;
+	background: #fff;
+	color: #6b4a15;
+	z-index: 2;
+	padding: 0;
+}
+
+.scroll-arrow-btn::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	padding: 2px;
+	border-radius: inherit;
+	background: linear-gradient(
+		120deg,
+		#926320 0%,
+		#926320 21%,
+		#FFF2C5 29%,
+		#C28D43 38%,
+		#FFF9B8 50%,
+		#AA701D 57%,
+		#FFF7C9 61%,
+		#C78E3F 68%,
+		#FFEEB1 74%,
+		#CF9B53 81%,
+		#FFF6D4 87%,
+		#C89042 92%,
+		#C89042 100%
+	);
+	background-size: 260% 260%;
+	background-position: 20% 50%;
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+.scroll-arrow-btn-left {
+	left: 0;
+}
+
+.scroll-arrow-btn-right {
+	right: 0;
+}
