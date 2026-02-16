@@ -1,9 +1,27 @@
 <style>
+	.categories-row {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: .5rem;
+		width: 100%;
+		overflow-x: auto;
+	}
+
 	.category-badge {
 		background-color: #f8f8f8ad;
 		transition: background-color .2s;
 		text-decoration: none;
 		color: black;
+		flex: 1 1 0;
+		min-width: 0;
+		text-align: center;
+		padding: .5rem .5rem;
+		border-radius: .375rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.category-badge:hover {
@@ -11,9 +29,9 @@
 	}
 </style>
 
-<div class="row g-1 justify-content-center w-100">
+<div class="categories-row px-4 mx-4">
 	{% for category in categories %}
-		<a class="col-auto m-1 p-2 category-badge" href="{{ path('product_index', {
+		<a class="category-badge" href="{{ path('product_index', {
 			asort: category.getId,
 			q: app.request.query.get('q')
 		}) }}">
