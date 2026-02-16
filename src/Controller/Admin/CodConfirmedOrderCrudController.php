@@ -10,7 +10,7 @@ final class CodConfirmedOrderCrudController extends OrderCrudController
 	public function configureCrud(Crud $crud): Crud
 	{
 		return parent::configureCrud($crud)
-			->setPageTitle(Crud::PAGE_INDEX, 'Zamówienia COD (confirmed)');
+			->setPageTitle(Crud::PAGE_INDEX, 'Zamówienia za pobraniem (potwierdzone)');
 	}
 
 	protected function applyBaseFilters(QueryBuilder $qb): void

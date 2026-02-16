@@ -1,0 +1,58 @@
+action:
+  new: "Dodaj"
+  search: "Szukaj"
+  detail: "Szczegóły"
+  edit: "Edytuj"
+  delete: "Usuń"
+  save: "Zapisz"
+  save_and_continue: "Zapisz i kontynuuj"
+  save_and_return: "Zapisz i wróć"
+  save_and_add: "Zapisz i dodaj kolejny"
+  save_and_add_another: "Zapisz i dodaj kolejny"
+  cancel: "Anuluj"
+  index: "Lista"
+  filters: "Filtry"
+  remove: "Usuń"
+  add_new_item: "Dodaj element"
+  add_another_item: "Dodaj kolejny element"
+  back_to_listing: "Wróć do listy"
+  batch_delete: "Usuń zaznaczone"
+
+label:
+  "true": "Tak"
+  "false": "Nie"
+  empty: "Puste"
+  "null": "Brak"
+  object: "Obiekt"
+  in_list: "W liście"
+  not_available: "Niedostępne"
+
+datagrid:
+  hidden_results: "Niektóre wyniki są ukryte, aby poprawić wydajność. Użyj wyszukiwarki, aby je doprecyzować."
+  no_results: "Brak wyników"
+  search: "Szukaj"
+
+paginator:
+  first: "Pierwsza"
+  previous: "Poprzednia"
+  next: "Następna"
+  last: "Ostatnia"
+  counter: "<strong>%start%</strong> - <strong>%end%</strong> z <strong>%results%</strong>"
+
+user:
+  logged_in_as: "Zalogowany jako"
+  anonymous: "Anonim"
+  sign_out: "Wyloguj"
+
+page_title:
+  dashboard: "Panel administracyjny"
+  detail: "Szczegóły"
+  edit: "Edytuj %entity_label_singular%"
+  index: "Lista %entity_label_plural%"
+  new: "Dodaj %entity_label_singular%"
+
+filter:
+  title: "Filtry"
+  button:
+    clear: "Wyczyść"
+    apply: "Zastosuj"
