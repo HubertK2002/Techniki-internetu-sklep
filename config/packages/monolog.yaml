@@ -5,6 +5,11 @@ monolog:
 when@dev:
     monolog:
         handlers:
+            messenger:
+                type: stream
+                path: "%kernel.logs_dir%/messenger.log"
+                level: debug
+                channels: ["messenger"]
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"

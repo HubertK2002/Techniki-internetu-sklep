@@ -19,10 +19,21 @@ final class LogEmailMiddleware implements MiddlewareInterface
 		if ($msg instanceof SendEmailMessage) {
 			$email = $msg->getMessage();
 
-			$this->logger->info('Messenger email peek', [
-				'from' => array_map(fn($a) => $a->toString(), $email->getFrom()),
-				'to' => array_map(fn($a) => $a->toString(), $email->getTo()),
-				'subject' => $email->getSubject(),
+			$from = method_exists($email, 'getFrom')
+				? array_map(fn($a) => $a->toString(), $email->getFrom())
+				: [];
+			$to = method_exists($email, 'getTo')
+				? array_map(fn($a) => $a->toString(), $email->getTo())
+				: [];
+			$subject = method_exists($email, 'getSubject')
+				? $email->getSubject()
+				: null;
+
+			$this->logger->info('Messenger email params', [
+				'message_class' => $email::class,
+				'from' => $from,
+				'to' => $to,
+				'subject' => $subject,
 			]);
 		}
 
