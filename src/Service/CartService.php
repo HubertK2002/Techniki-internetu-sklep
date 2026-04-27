@@ -348,17 +348,24 @@ final class CartService
 
 				if ($stock === null || $stock < $qty) {
 					$errors[] = sprintf('%s: dostępne %d, potrzebujesz %d', $product->getName(), (int)$stock, $qty);
+					continue;
 				}
 
-				//null oznacza brak/0
-				$affected = $em->createQuery(
-					'UPDATE App\Entity\Product p
-					 SET p.Stock = p.Stock - :qty
-					 WHERE p.id = :id AND p.Stock IS NOT NULL AND p.Stock >= :qty'
-				)
-					->setParameter('qty', $qty)
-					->setParameter('id', $product->getId())
-					->execute();
+				$affected = $conn->executeStatement(
+					'UPDATE istw
+					 SET StanMag = StanMag - :qty
+					 WHERE TowId = :id
+					   AND MagId = 1
+					   AND (StanMag - COALESCE(RezerwacjaMag, 0)) >= :qty',
+					[
+						'qty' => $qty,
+						'id' => $product->getId(),
+					]
+				);
+
+				if ($affected !== 1) {
+					$errors[] = sprintf('%s: stan magazynowy zmienił się w trakcie składania zamówienia.', $product->getName());
+				}
 
 			}
 

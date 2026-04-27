@@ -24,6 +24,14 @@
 			</a>
 		</h5>
 
+		<div class="small mb-2 {{ product.Stock > 0 ? 'text-success' : 'text-danger' }}">
+			{% if product.Stock > 0 %}
+				Dostępne: <strong>{{ product.Stock }}</strong> szt.
+			{% else %}
+				Brak w magazynie
+			{% endif %}
+		</div>
+
 		{% if product.Description %}
 			<p class="card-text text-muted small mb-3">
 				{{ product.Description|striptags|u.truncate(120, '…') }}
@@ -54,14 +62,5 @@
 			</div>
 		</div>
 
-		<div class="d-flex gap-2 mt-2">
-			{% if product.Stock is not null %}
-				{% if product.Stock > 0 %}
-					<span class="badge text-bg-success">Dostępny: {{ product.Stock }}</span>
-				{% else %}
-					<span class="badge text-bg-danger">Brak</span>
-				{% endif %}
-			{% endif %}
-		</div>
 	</div>
 </div>

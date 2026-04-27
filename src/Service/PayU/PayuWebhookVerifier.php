@@ -10,6 +10,10 @@ final class PayuWebhookVerifier
 
 	public function verify(Request $request, string $rawBody): bool
 	{
+		if (empty($this->cfg->secondKey)) {
+			return false;
+		}
+
 		$header = $request->headers->get('OpenPayu-Signature')
 			?? $request->headers->get('X-OpenPayU-Signature');
 

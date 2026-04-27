@@ -34,7 +34,7 @@ class ProductCrudController extends AbstractCrudController
 		yield MoneyField::new('Price', 'Cena')->setCurrency('PLN')->setStoredAsCents(false)->setNumDecimals(4);
 		yield BooleanField::new('PromotionEnabled', 'Promocja aktywna');
 		yield IntegerField::new('PromotionPercent', 'Rabat (%)')->setHelp('Wpisz wartość 1-99');
-		yield IntegerField::new('Stock', 'Stan');
+		yield IntegerField::new('Stock', 'Stan')->hideOnForm();
 		yield TextEditorField::new('Description', 'Opis')->hideOnIndex();
 		yield AssociationField::new('Category', 'Kategoria');
 

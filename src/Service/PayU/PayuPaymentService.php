@@ -111,6 +111,8 @@ final class PayuPaymentService
 
 		$this->em->flush();
 
+		$payuPayload['extOrderId'] = sprintf('shop-%d-%d-%s', $order->getId(), $order->getPayuAttempt(), date('YmdHis'));
+
 		// payload musi mieć nowy extOrderId (factory już to uwzględnia)
 		return $this->createNew($order, $payuPayload);
 	}
@@ -121,6 +123,41 @@ final class PayuPaymentService
 
 		$data = $this->client->getOrder($order->getPayuOrderId());
 		$this->applyPayuStatus($order, $data);
+
+		$order->setPayuLastStatusCheckAt(new \DateTimeImmutable());
+		$order->touch();
+
+		$this->em->flush();
+	}
+
+	public function applyNotification(Order $order, array $notification): void
+	{
+		if ($order->getPaymentMethod() !== 'payu') {
+			throw new \RuntimeException('To nie jest PayU.');
+		}
+
+		$payuOrderId = $notification['order']['orderId'] ?? null;
+		if (is_string($payuOrderId) && $payuOrderId !== '' && $order->getPayuOrderId() !== $payuOrderId) {
+			$order->setPayuOrderId($payuOrderId);
+		}
+
+		$status = $notification['order']['status'] ?? null;
+		if (!is_string($status) || $status === '') {
+			throw new \RuntimeException('Brak statusu PayU.');
+		}
+
+		if ($order->isPaid()) {
+			$this->em->flush();
+			return;
+		}
+
+		$this->applyPayuStatus($order, [
+			'orders' => [
+				[
+					'status' => $status,
+				],
+			],
+		]);
 
 		$order->setPayuLastStatusCheckAt(new \DateTimeImmutable());
 		$order->touch();

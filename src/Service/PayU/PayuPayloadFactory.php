@@ -52,12 +52,9 @@ final class PayuPayloadFactory
 			$attempt = 1;
 		}
 
-		$payload['extOrderId'] = $order->getId().'-'.$attempt;
+		$payload['extOrderId'] = sprintf('shop-%d-%d-%s', $order->getId(), $attempt, date('YmdHis'));
 
-		// notifyUrl tylko gdy ustawione (na razie puste)
-		if (!empty($this->cfg->notifyUrl)) {
-			$payload['notifyUrl'] = $this->cfg->notifyUrl;
-		}
+		$payload['notifyUrl'] = $this->cfg->notifyUrl ?: rtrim($this->cfg->continueBase, '/').'/payu/notify';
 
 		if ($order->getUser()) {
 			$u = $order->getUser();

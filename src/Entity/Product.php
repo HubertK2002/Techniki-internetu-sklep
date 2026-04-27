@@ -44,8 +44,12 @@ class Product
     #[ORM\Column(name: 'description', type: Types::TEXT, nullable: true)]
     private ?string $Description = null;
 
-    #[ORM\Column(name: 'stock', nullable: true)]
-    private ?int $Stock = null;
+	#[ORM\Column(name: 'stock', nullable: true)]
+	private ?int $Stock = null;
+
+	/** @var Collection<int, ProductInventory> */
+	#[ORM\OneToMany(mappedBy: 'Product', targetEntity: ProductInventory::class)]
+	private Collection $Inventories;
 
     #[ORM\Column(name: 'Nazwa', length: 255)]
     private ?string $Name = null;
@@ -262,6 +266,7 @@ class Product
 	public function __construct()
 	{
 		$this->Opinions = new ArrayCollection();
+		$this->Inventories = new ArrayCollection();
 	}
 
     public function getId(): ?int
@@ -354,6 +359,15 @@ class Product
 
     public function getStock(): ?int
     {
+		if (!$this->Inventories->isEmpty()) {
+			$stock = 0.0;
+			foreach ($this->Inventories as $inventory) {
+				$stock += $inventory->getAvailableStock();
+			}
+
+			return (int) floor($stock);
+		}
+
         return $this->Stock;
     }
 
