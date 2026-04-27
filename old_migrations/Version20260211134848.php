@@ -20,16 +20,16 @@ final class Version20260211134848 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE category ADD parent_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE category ADD CONSTRAINT FK_64C19C1727ACA70 FOREIGN KEY (parent_id) REFERENCES category (id) ON DELETE SET NULL');
-        $this->addSql('CREATE INDEX IDX_64C19C1727ACA70 ON category (parent_id)');
+        $this->addSql('ALTER TABLE kategoria ADD parent_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE kategoria ADD CONSTRAINT FK_64C19C1727ACA70 FOREIGN KEY (parent_id) REFERENCES kategoria (KatId) ON DELETE SET NULL');
+        $this->addSql('CREATE INDEX IDX_64C19C1727ACA70 ON kategoria (parent_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE category DROP FOREIGN KEY FK_64C19C1727ACA70');
-        $this->addSql('DROP INDEX IDX_64C19C1727ACA70 ON category');
-        $this->addSql('ALTER TABLE category DROP parent_id');
+        $this->addSql('ALTER TABLE kategoria DROP FOREIGN KEY FK_64C19C1727ACA70');
+        $this->addSql('DROP INDEX IDX_64C19C1727ACA70 ON kategoria');
+        $this->addSql('ALTER TABLE kategoria DROP parent_id');
     }
 }

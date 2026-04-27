@@ -1,6 +1,8 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        # Keep Doctrine scoped to this app's tables when sharing artex_test2 with legacy tables.
+        schema_filter: '~^(app_doctrine_migration_versions|messenger_messages|shop_user|towar|kategoria|cart|cart_item|order|wishlist|wishlist_product|opinion)$~'
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)

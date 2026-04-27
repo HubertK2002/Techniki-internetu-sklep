@@ -29,7 +29,7 @@ class Wishlist
 	#[ORM\ManyToMany(targetEntity: Product::class)]
 	#[ORM\JoinTable(name: 'wishlist_product')]
 	#[ORM\JoinColumn(name: 'wishlist_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-	#[ORM\InverseJoinColumn(name: 'product_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+	#[ORM\InverseJoinColumn(name: 'product_id', referencedColumnName: 'TowId', onDelete: 'CASCADE')]
 	private Collection $Products;
 
 	public function __construct()

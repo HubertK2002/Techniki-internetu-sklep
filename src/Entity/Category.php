@@ -2,31 +2,34 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Repository\CategoryRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\Table(name: 'kategoria')]
 class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: 'KatId', type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(name: 'Nazwa', length: 40)]
     private ?string $Name = null;
 
-    #[ORM\Column(length: 120)]
-    private ?string $Slug = null;
-
 	#[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
-	#[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'SET NULL', nullable: true)]
+	#[ORM\JoinColumn(name: 'CentrKatId', referencedColumnName: 'KatId', onDelete: 'SET NULL', nullable: true)]
 	private ?self $parent = null;
 
 	#[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
 	private Collection $children;
+
+	public function __construct()
+	{
+		$this->children = new ArrayCollection();
+	}
 
     public function getId(): ?int
     {
@@ -47,13 +50,11 @@ class Category
 
     public function getSlug(): ?string
     {
-        return $this->Slug;
+        return self::slugify($this->Name);
     }
 
     public function setSlug(string $Slug): static
     {
-        $this->Slug = $Slug;
-
         return $this;
     }
 
@@ -96,5 +97,31 @@ class Category
 	public function __toString(): string
 	{
 		return (string) $this->getName();
+	}
+
+	public static function slugify(?string $value): ?string
+	{
+		if ($value === null) {
+			return null;
+		}
+
+		$value = trim($value);
+		if ($value === '') {
+			return null;
+		}
+
+		$transliterated = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value);
+		if ($transliterated !== false) {
+			$value = $transliterated;
+		}
+
+		$value = strtolower($value);
+		$value = preg_replace('/\s+/u', ' ', $value) ?? $value;
+		$value = trim($value);
+		$value = preg_replace('/[^a-z0-9 ]+/', '', $value) ?? $value;
+		$value = preg_replace('/ +/', '-', $value) ?? $value;
+		$value = trim($value, '-');
+
+		return $value !== '' ? $value : null;
 	}
 }

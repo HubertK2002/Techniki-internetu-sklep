@@ -26,7 +26,6 @@ class CategoryCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 		yield TextField::new('Name', 'Nazwa');
-		yield TextField::new('Slug', 'Slug')->hideOnIndex();
 		yield $this->parentField();
     }
     

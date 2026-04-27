@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 final class CategoryFixtures extends Fixture
 {
@@ -13,8 +12,6 @@ final class CategoryFixtures extends Fixture
 
 	public function load(ObjectManager $manager): void
 	{
-		$slugger = new AsciiSlugger('pl');
-
 		$roots = [
 			'Elektronika',
 			'Dom i ogród',
@@ -32,7 +29,7 @@ final class CategoryFixtures extends Fixture
 
 		// 1) ROOT categories
 		foreach ($roots as $name) {
-			$cat = $this->makeCategory($name, $slugger);
+			$cat = $this->makeCategory($name);
 			$manager->persist($cat);
 
 			$this->addReference($this->ref($cat->getSlug()), $cat);
@@ -61,7 +58,7 @@ final class CategoryFixtures extends Fixture
 			$parent = $this->getReference($this->ref($parentSlug), Category::class);
 
 			foreach ($childrenNames as $childName) {
-				$child = $this->makeCategory($childName, $slugger);
+				$child = $this->makeCategory($childName);
 				$child->setParent($parent);
 
 				$manager->persist($child);
@@ -80,7 +77,7 @@ final class CategoryFixtures extends Fixture
 		];
 
 		foreach ($thirdLevel as $parentSlug => $childrenNames) {
-			$parentSlug = $slugger->slug($parentSlug)->lower()->toString(); // safety
+			$parentSlug = Category::slugify($parentSlug) ?? ''; // safety
 			// UWAGA: nasze slugi i tak są już w refach; to tylko gdybyś zmienił nazwy
 			// Lepiej: przechowuj klucze już jako slugi (jak wyżej) i nie sluguj tu.
 		}
@@ -98,7 +95,7 @@ final class CategoryFixtures extends Fixture
 			$parent = $this->getReference($this->ref($parentSlug), Category::class);
 
 			foreach ($childrenNames as $childName) {
-				$child = $this->makeCategory($childName, $slugger);
+				$child = $this->makeCategory($childName);
 				$child->setParent($parent);
 
 				$manager->persist($child);
@@ -108,11 +105,10 @@ final class CategoryFixtures extends Fixture
 		$manager->flush();
 	}
 
-	private function makeCategory(string $name, AsciiSlugger $slugger): Category
+	private function makeCategory(string $name): Category
 	{
 		$cat = new Category();
 		$cat->setName($name);
-		$cat->setSlug($slugger->slug($name)->lower()->toString());
 		return $cat;
 	}
 

@@ -77,7 +77,7 @@ class CategoryRepository extends ServiceEntityRepository
 	public function getTreeIndex(): array
 	{
 		$rows = $this->createQueryBuilder('c')
-			->select('c.id AS id, c.Name AS name, c.Slug AS slug, IDENTITY(c.parent) AS parentId')
+			->select('c.id AS id, c.Name AS name, IDENTITY(c.parent) AS parentId')
 			->orderBy('c.Name', 'ASC')
 			->getQuery()
 			->getArrayResult();
@@ -93,7 +93,7 @@ class CategoryRepository extends ServiceEntityRepository
 			$items[$id] = [
 				'id' => $id,
 				'name' => $r['name'],
-				'slug' => $r['slug'],
+				'slug' => Category::slugify((string) $r['name']),
 				'parentId' => $pid,
 			];
 

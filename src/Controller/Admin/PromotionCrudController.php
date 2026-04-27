@@ -47,10 +47,9 @@ final class PromotionCrudController extends ProductCrudController
 	{
 		yield TextField::new('Name', 'Produkt');
 		yield AssociationField::new('Category', 'Kategoria');
-		yield MoneyField::new('Price', 'Cena bazowa')->setCurrency('PLN');
+		yield MoneyField::new('Price', 'Cena bazowa')->setCurrency('PLN')->setStoredAsCents(false)->setNumDecimals(4);
 		yield IntegerField::new('PromotionPercent', 'Rabat (%)');
-		yield MoneyField::new('EffectivePrice', 'Cena po rabacie')->setCurrency('PLN')->onlyOnIndex();
+		yield MoneyField::new('EffectivePrice', 'Cena po rabacie')->setCurrency('PLN')->setStoredAsCents(false)->setNumDecimals(2)->onlyOnIndex();
 		yield BooleanField::new('PromotionEnabled', 'Aktywna');
 	}
 }
-

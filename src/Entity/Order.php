@@ -14,11 +14,11 @@ class Order
 	private ?int $id = null;
 
 	#[ORM\ManyToOne]
-	#[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+	#[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
 	private ?User $User = null;
 
 	#[ORM\OneToOne]
-	#[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+	#[ORM\JoinColumn(name: 'cart_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
 	private ?Cart $Cart = null;
 
 	#[ORM\Column(length: 20)]
