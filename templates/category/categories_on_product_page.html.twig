@@ -74,14 +74,18 @@
 	data-controller="category-menu"
 	data-category-menu-storage-key-value="category_menu_open_v1"
 >
+	<a class="d-inline-block mx-4 mt-4 mb-1 px-2 category-link {{ activeCategoryId is empty ? 'is-active' : '' }}"
+	   href="{{ path('product_index', q ? { q: q } : {}) }}">
+		Wszystkie
+	</a>
+
 	{% if roots is empty %}
 		<div class="text-muted">Brak kategorii</div>
 	{% else %}
-		<ul class="list-unstyled p-4 body-text">
+		<ul class="list-unstyled px-4 pb-4 pt-2 body-text">
 			{% for rootId in roots %}
 				{{ _self.render_node(items, childrenByParent, rootId, q, 'cat', activeCategoryId) }}
 			{% endfor %}
 		</ul>
 	{% endif %}
 </div>
-
