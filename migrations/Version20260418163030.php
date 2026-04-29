@@ -38,10 +38,8 @@ final class Version20260418163030 extends AbstractMigration
         $this->addSql('ALTER TABLE wishlist ADD CONSTRAINT FK_9CE12A31A76ED395 FOREIGN KEY (user_id) REFERENCES shop_user (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE wishlist_product ADD CONSTRAINT FK_4C46D2D7FB8E54CD FOREIGN KEY (wishlist_id) REFERENCES wishlist (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE wishlist_product ADD CONSTRAINT FK_4C46D2D74584665A FOREIGN KEY (product_id) REFERENCES towar (TowId) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE kategoria ADD CONSTRAINT FK_F5C8B0358F7A92FA FOREIGN KEY (CentrKatId) REFERENCES kategoria (KatId) ON DELETE SET NULL');
         $this->addSql('CREATE INDEX IDX_F5C8B0358F7A92FA ON kategoria (CentrKatId)');
-        $this->addSql('ALTER TABLE towar ADD promotion_enabled TINYINT DEFAULT 0 NOT NULL, ADD promotion_percent INT DEFAULT NULL, ADD image VARCHAR(255) DEFAULT NULL, ADD description LONGTEXT DEFAULT NULL, ADD stock INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE towar ADD CONSTRAINT FK_3A66626452079FA2 FOREIGN KEY (KatId) REFERENCES kategoria (KatId) ON DELETE SET NULL');
+        $this->addSql('ALTER TABLE towar ADD promotion_enabled TINYINT DEFAULT 0 NULL, ADD promotion_percent INT DEFAULT NULL, ADD image VARCHAR(255) DEFAULT NULL, ADD description LONGTEXT DEFAULT NULL, ADD stock INT DEFAULT NULL');
         $this->addSql('CREATE INDEX IDX_3A66626452079FA2 ON towar (KatId)');
     }
 
