@@ -39,8 +39,9 @@ final class PromotionCrudController extends ProductCrudController
 		$qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
 		return $qb
-			->addOrderBy('entity.PromotionEnabled', 'DESC')
-			->addOrderBy('entity.PromotionPercent', 'DESC');
+			->leftJoin('entity.Details', 'details')
+			->addOrderBy('details.PromotionEnabled', 'DESC')
+			->addOrderBy('details.PromotionPercent', 'DESC');
 	}
 
 	public function configureFields(string $pageName): iterable

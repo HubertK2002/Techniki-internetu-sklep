@@ -32,20 +32,8 @@ class Product
     #[ORM\Column(name: 'ArtId', type: Types::INTEGER, nullable: true)]
     private ?int $ArtId = null;
 
-    #[ORM\Column(name: 'promotion_enabled', type: Types::BOOLEAN, options: ['default' => false])]
-    private bool $PromotionEnabled = false;
-
-    #[ORM\Column(name: 'promotion_percent', nullable: true)]
-    private ?int $PromotionPercent = null;
-
-    #[ORM\Column(name: 'image', length: 255, nullable: true)]
-    private ?string $Image = null;
-
-    #[ORM\Column(name: 'description', type: Types::TEXT, nullable: true)]
-    private ?string $Description = null;
-
-	#[ORM\Column(name: 'stock', nullable: true)]
-	private ?int $Stock = null;
+	#[ORM\OneToOne(mappedBy: 'Product', targetEntity: ProductDetails::class, cascade: ['persist', 'remove'])]
+	private ?ProductDetails $Details = null;
 
 	/** @var Collection<int, ProductInventory> */
 	#[ORM\OneToMany(mappedBy: 'Product', targetEntity: ProductInventory::class)]
@@ -288,37 +276,35 @@ class Product
 
 	public function isPromotionEnabled(): bool
 	{
-		return $this->PromotionEnabled;
+		return $this->Details?->isPromotionEnabled() ?? false;
 	}
 
 	public function setPromotionEnabled(bool $PromotionEnabled): static
 	{
-		$this->PromotionEnabled = $PromotionEnabled;
+		$this->getOrCreateDetails()->setPromotionEnabled($PromotionEnabled);
 
 		return $this;
 	}
 
 	public function getPromotionPercent(): ?int
 	{
-		return $this->PromotionPercent;
+		return $this->Details?->getPromotionPercent();
 	}
 
 	public function setPromotionPercent(?int $PromotionPercent): static
 	{
-		if ($PromotionPercent === null) {
-			$this->PromotionPercent = null;
-			return $this;
-		}
+		$this->getOrCreateDetails()->setPromotionPercent($PromotionPercent);
 
-		$this->PromotionPercent = max(0, min(99, $PromotionPercent));
 		return $this;
 	}
 
 	public function hasPromotion(): bool
 	{
-		return $this->PromotionEnabled
-			&& $this->PromotionPercent !== null
-			&& $this->PromotionPercent > 0;
+		$promotionPercent = $this->getPromotionPercent();
+
+		return $this->isPromotionEnabled()
+			&& $promotionPercent !== null
+			&& $promotionPercent > 0;
 	}
 
 	public function getEffectivePrice(): float
@@ -329,30 +315,30 @@ class Product
 			return $basePrice;
 		}
 
-		$discounted = $basePrice * (100 - (int) $this->PromotionPercent) / 100;
+		$discounted = $basePrice * (100 - (int) $this->getPromotionPercent()) / 100;
 		return round($discounted, 2);
 	}
 
     public function getImage(): ?string
     {
-        return $this->Image;
+        return $this->Details?->getImage();
     }
 
     public function setImage(?string $Image): static
     {
-        $this->Image = $Image;
+        $this->getOrCreateDetails()->setImage($Image);
 
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->Details?->getDescription();
     }
 
     public function setDescription(?string $Description): static
     {
-        $this->Description = $Description;
+        $this->getOrCreateDetails()->setDescription($Description);
 
         return $this;
     }
@@ -368,15 +354,40 @@ class Product
 			return (int) floor($stock);
 		}
 
-        return $this->Stock;
+        return $this->Details?->getStock();
     }
 
     public function setStock(?int $Stock): static
     {
-        $this->Stock = $Stock;
+        $this->getOrCreateDetails()->setStock($Stock);
 
         return $this;
     }
+
+	public function getDetails(): ?ProductDetails
+	{
+		return $this->Details;
+	}
+
+	public function setDetails(?ProductDetails $Details): static
+	{
+		$this->Details = $Details;
+
+		if ($Details !== null && $Details->getProduct() !== $this) {
+			$Details->setProduct($this);
+		}
+
+		return $this;
+	}
+
+	private function getOrCreateDetails(): ProductDetails
+	{
+		if ($this->Details === null) {
+			$this->Details = new ProductDetails($this);
+		}
+
+		return $this->Details;
+	}
 
     public function getName(): ?string
     {

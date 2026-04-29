@@ -42,11 +42,12 @@ class ProductRepository extends ServiceEntityRepository
 	public function findPromotions(int $limit = 12): array
 	{
 		return $this->createQueryBuilder('p')
-			->andWhere('p.PromotionEnabled = :enabled')
-			->andWhere('p.PromotionPercent IS NOT NULL')
-			->andWhere('p.PromotionPercent > 0')
+			->innerJoin('p.Details', 'details')
+			->andWhere('details.PromotionEnabled = :enabled')
+			->andWhere('details.PromotionPercent IS NOT NULL')
+			->andWhere('details.PromotionPercent > 0')
 			->setParameter('enabled', true)
-			->orderBy('p.PromotionPercent', 'DESC')
+			->orderBy('details.PromotionPercent', 'DESC')
 			->addOrderBy('p.id', 'DESC')
 			->setMaxResults($limit)
 			->getQuery()
